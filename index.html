@@ -747,20 +747,27 @@
     if(!ttsOK()){ toast('이 환경에서는 음성 재생이 지원되지 않아요. 문장을 눈으로 읽으며 따라 해보세요.'); return; }
     try {
       var synth = window.speechSynthesis;
-      synth.cancel();
-      var u = new SpeechSynthesisUtterance(text);
-      u.lang = 'en-US';
-      u.rate = stageState ? stageState.speed : 1;
-      u.pitch = 1;
-      var v = pickVoice();
-      if(v) u.voice = v;
+      var wasBusy = !!(synth.speaking || synth.pending);
+      if(wasBusy){ synth.cancel(); }
+      if(synth.paused){ synth.resume(); }
       var playBtn = $('.play-big');
-      if(playBtn) playBtn.classList.add('playing');
-      u.onend = function(){ if(playBtn) playBtn.classList.remove('playing'); };
-      u.onerror = function(){ if(playBtn) playBtn.classList.remove('playing'); };
-      synth.speak(u);
+      var doSpeak = function(){
+        var u = new SpeechSynthesisUtterance(text);
+        u.lang = 'en-US';
+        u.volume = 1;
+        u.rate = stageState ? stageState.speed : 1;
+        u.pitch = 1;
+        var v = pickVoice();
+        if(v) u.voice = v;
+        if(playBtn) playBtn.classList.add('playing');
+        u.onend = function(){ if(playBtn) playBtn.classList.remove('playing'); };
+        u.onerror = function(){ if(playBtn) playBtn.classList.remove('playing'); };
+        synth.speak(u);
+      };
+      if(wasBusy){ setTimeout(doSpeak, 60); }
+      else { doSpeak(); }
     } catch(e){
-      toast('음성 재생을 시작할 수 없어요. 잠시 후 다시 시도해주세요.');
+      toast('음성 재생을 시작할 수 없어요. 무음 모드가 꺼져 있는지 확인해주세요.');
     }
   }
   if(ttsOK()){
