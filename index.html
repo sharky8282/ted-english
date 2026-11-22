@@ -1264,14 +1264,24 @@
     renderGame();
     scrollStageTop();
   }
+  function tokenMatch(a, b){
+    return String(a || '').toLowerCase() === String(b || '').toLowerCase();
+  }
   function hintScramble(){
     var tokens = senTokens();
     var st = stageState.scramble;
     var k = 0;
-    while(k < st.placed.length && st.placed[k].id === k) k++;
+    while(k < st.placed.length && tokenMatch(st.placed[k].w, tokens[k])) k++;
     st.placed = st.placed.slice(0, k);
     if(k < tokens.length){
-      st.placed.push({ id: k, w: tokens[k] });
+      var usedIds = st.placed.map(function(p){ return p.id; });
+      var pickId = usedIds.indexOf(k) < 0 ? k : -1;
+      if(pickId < 0){
+        for(var j = 0; j < tokens.length; j++){
+          if(usedIds.indexOf(j) < 0 && tokenMatch(tokens[j], tokens[k])){ pickId = j; break; }
+        }
+      }
+      if(pickId >= 0) st.placed.push({ id: pickId, w: tokens[pickId] });
       st.hinted = true;
       toast('힌트: ' + (k + 1) + '번째 단어까지 맞춰드렸어요.');
     } else {
@@ -1285,7 +1295,7 @@
     var st = stageState.scramble;
     st.tries++;
     session.checks++;
-    var ok = st.placed.length === tokens.length && st.placed.every(function(p, i){ return p.id === i; });
+    var ok = st.placed.length === tokens.length && st.placed.every(function(p, i){ return tokenMatch(p.w, tokens[i]); });
     var first = st.tries === 1 && !st.hinted;
 
     if(ok){
@@ -1307,7 +1317,7 @@
       sfxBad();
       buzz([20, 40, 20]);
       var k = 0;
-      while(k < st.placed.length && st.placed[k].id === k) k++;
+      while(k < st.placed.length && tokenMatch(st.placed[k].w, tokens[k])) k++;
       stageState.fb = {
         type: 'error',
         title: '순서가 조금 달라요',
