@@ -1,0 +1,1696 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#58cc02">
+<title>TED 통암기 — 하루 10분 영어</title>
+<style>
+  :root{
+    --green:#58cc02; --green-d:#46a302; --green-l:#eafcd9;
+    --blue:#1cb0f6; --blue-d:#1899d6; --blue-l:#e6f6ff;
+    --yellow:#ffc800; --yellow-d:#e0a800; --yellow-l:#fff6d6;
+    --red:#ff4b4b; --red-d:#e03030; --red-l:#ffecec;
+    --purple:#ce82ff; --purple-d:#a568cc; --purple-l:#f6ecff;
+    --ink:#3c3c3c; --sub:#777; --muted:#a9b0ad; --line:#e6eae8;
+    --bg:#f2f7f4; --card:#ffffff;
+    --r:18px;
+    --shadow:0 2px 0 rgba(23,53,45,.05);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%}
+  body{
+    margin:0;color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Noto Sans KR","Noto Sans","Liberation Sans","DejaVu Sans","Malgun Gothic","Segoe UI",Roboto,"Helvetica Neue",Helvetica,Arial,sans-serif;
+    background:
+      radial-gradient(900px 520px at 8% -10%, #d9f7cb 0%, rgba(217,247,203,0) 62%),
+      radial-gradient(900px 620px at 112% 4%, #d6ecff 0%, rgba(214,236,255,0) 58%),
+      #eef4f1;
+    display:flex;justify-content:center;
+    -webkit-font-smoothing:antialiased;
+  }
+  [hidden]{display:none !important}
+  button{font-family:inherit;color:inherit}
+  h1,h2,h3,p{margin:0}
+
+  .phone{
+    position:relative;width:100%;max-width:480px;height:100vh;height:100dvh;
+    background:var(--card);display:flex;flex-direction:column;overflow:hidden;
+    box-shadow:0 18px 70px rgba(18,48,38,.14);
+  }
+  .screen{display:none;flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch}
+  .screen.active{display:flex;flex-direction:column;animation:fadeIn .22s ease}
+
+  @keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+  @keyframes pop{0%{transform:scale(.85)}60%{transform:scale(1.06)}100%{transform:scale(1)}}
+  @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-7px)}40%{transform:translateX(7px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+  @keyframes fall{0%{transform:translateY(-16px) rotate(0);opacity:1}100%{transform:translateY(102vh) rotate(560deg);opacity:.9}}
+  @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(88,204,2,.35)}50%{box-shadow:0 0 0 14px rgba(88,204,2,0)}}
+  @keyframes flame{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
+
+  /* ---------- shared bits ---------- */
+  .bar{height:14px;border-radius:99px;background:#e9eeeb;overflow:hidden}
+  .bar > i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,#8ae234,#58cc02);transition:width .45s cubic-bezier(.2,.8,.2,1)}
+  .bar.slim{height:12px}
+
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    border:0;border-radius:16px;background:var(--green);color:#fff;
+    font-size:16px;font-weight:800;letter-spacing:-.2px;
+    padding:15px 20px;min-height:52px;cursor:pointer;
+    box-shadow:0 4px 0 var(--green-d);
+    transition:transform .06s ease,box-shadow .06s ease,filter .15s ease;
+    user-select:none;
+  }
+  .btn:active{transform:translateY(4px);box-shadow:0 0 0 var(--green-d)}
+  .btn:disabled{background:#e8ecea;color:#b4bcb8;box-shadow:0 4px 0 #dde2df;cursor:default}
+  .btn.full{width:100%}
+  .btn.blue{background:var(--blue);box-shadow:0 4px 0 var(--blue-d)}
+  .btn.blue:active{box-shadow:0 0 0 var(--blue-d)}
+  .btn.ghost{background:#fff;color:var(--sub);border:2px solid var(--line);box-shadow:0 2px 0 var(--line);font-weight:800}
+  .btn.ghost:active{transform:translateY(2px);box-shadow:none}
+  .btn.small{min-height:44px;font-size:14px;padding:11px 16px;border-radius:14px}
+
+  .icon-btn{
+    border:0;background:transparent;width:40px;height:40px;border-radius:12px;
+    display:inline-flex;align-items:center;justify-content:center;
+    font-size:18px;font-weight:800;color:var(--muted);cursor:pointer;
+  }
+  .icon-btn:active{background:#f2f5f3}
+
+  /* ---------- home ---------- */
+  #screen-home.active{display:flex;flex-direction:column}
+  .home{padding:16px 18px 30px}
+  .home-head{display:flex;flex-direction:column;gap:14px;margin-bottom:16px}
+  .brand{display:flex;align-items:center;gap:11px}
+  .logo{
+    width:44px;height:44px;border-radius:14px;flex:none;
+    background:linear-gradient(150deg,#6bdc14,#44b800);
+    color:#fff;display:flex;align-items:center;justify-content:center;
+    font-weight:900;font-size:23px;letter-spacing:-1px;
+    box-shadow:0 4px 0 #3d9a00, inset 0 1px 0 rgba(255,255,255,.5);
+  }
+  .brand h1{font-size:19px;font-weight:900;letter-spacing:-.4px}
+  .brand p{font-size:12px;color:var(--muted);margin-top:2px;font-weight:600}
+  .brand .sound{margin-left:auto}
+
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  .stat{background:#fff;border:2px solid var(--line);border-radius:14px;padding:9px 10px;display:flex;align-items:center;gap:7px;box-shadow:var(--shadow)}
+  .stat b{display:block;font-size:16px;font-weight:900;letter-spacing:-.3px;line-height:1.1}
+  .stat small{font-size:10.5px;color:var(--muted);font-weight:700}
+  .stat-ico{font-size:18px;line-height:1}
+  #stat-streak{color:#ff8a00}
+
+  .goal-card{
+    background:linear-gradient(140deg,#f0fce2,#e4f8ff);
+    border:2px solid #d7efc8;border-radius:22px;
+    padding:16px 16px 14px;margin-bottom:18px;
+    box-shadow:0 4px 0 #dcefd0;
+  }
+  .goal-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px;gap:10px}
+  .goal-top b{font-size:16px;font-weight:900;letter-spacing:-.3px}
+  .goal-top p{font-size:12.5px;color:#6c8a63;font-weight:700;margin-top:3px}
+  .goal-badge{
+    flex:none;background:#fff;border-radius:999px;padding:7px 12px;
+    font-size:12.5px;font-weight:900;color:var(--green-d);
+    box-shadow:0 2px 0 rgba(0,0,0,.04)
+  }
+  .goal-card .bar{background:#fff}
+  .goal-foot{display:flex;align-items:center;justify-content:space-between;margin-top:10px;gap:8px}
+  .goal-foot span{font-size:12px;font-weight:800;color:#6c8a63}
+  .goal-cta{margin-top:13px;width:100%}
+
+  .sec-head{display:flex;align-items:baseline;justify-content:space-between;margin:6px 2px 10px}
+  .sec-head h2{font-size:15.5px;font-weight:900;letter-spacing:-.3px}
+  .sec-head span{font-size:11.5px;color:var(--muted);font-weight:800}
+
+  .deck-list{display:flex;flex-direction:column;gap:10px;margin-bottom:16px}
+  .deck-card{
+    display:flex;align-items:stretch;background:#fff;border:2px solid var(--line);
+    border-radius:18px;overflow:hidden;box-shadow:var(--shadow);
+  }
+  .deck-main{
+    flex:1;display:flex;align-items:center;gap:12px;position:relative;
+    border:0;background:transparent;text-align:left;padding:12px;cursor:pointer;
+    min-width:0;
+  }
+  .deck-main:active{background:#fafcfb}
+  .deck-emoji{
+    width:48px;height:48px;border-radius:15px;flex:none;
+    display:flex;align-items:center;justify-content:center;font-size:24px;
+  }
+  .deck-info{min-width:0;flex:1}
+  .deck-info b{display:block;font-size:15.5px;font-weight:900;letter-spacing:-.3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .deck-info small{display:block;font-size:11px;color:var(--muted);font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
+  .deck-tags{display:flex;gap:6px;margin-top:6px}
+  .deck-tags i{font-style:normal;font-size:10.5px;font-weight:800;color:#8a938f;background:#f4f7f5;border-radius:7px;padding:2px 7px}
+  .deck-go{
+    flex:none;width:32px;height:32px;border-radius:50%;
+    background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;
+    font-size:11px;box-shadow:0 3px 0 var(--green-d);margin-left:4px;
+  }
+  .deck-del{
+    flex:none;align-self:center;margin-right:10px;border:0;background:#f6f8f7;
+    color:#b7bfbb;width:30px;height:30px;border-radius:10px;font-weight:900;cursor:pointer;
+  }
+  .tone-amber .deck-emoji{background:var(--yellow-l)}
+  .tone-purple .deck-emoji{background:var(--purple-l)}
+  .tone-blue .deck-emoji{background:var(--blue-l)}
+  .tone-mint .deck-emoji{background:var(--green-l)}
+
+  .add-card{
+    width:100%;border:2px dashed #d3ddd8;background:#fbfdfc;color:#7f8d87;
+    border-radius:18px;padding:16px;font-size:14.5px;font-weight:800;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:8px;
+  }
+  .add-card:active{background:#f4f9f6}
+
+  .empty-custom{
+    border:2px dashed #e2e9e5;border-radius:16px;padding:14px;text-align:center;
+    font-size:12px;color:var(--muted);font-weight:700;margin-bottom:10px;
+  }
+
+  .home-foot{text-align:center;padding:18px 4px 4px}
+  .home-foot p{font-size:11px;color:#b3bcb8;font-weight:700;line-height:1.6}
+  .linkish{border:0;background:none;color:#b3bcb8;font-size:11px;font-weight:700;text-decoration:underline;margin-top:8px;cursor:pointer}
+
+  /* ---------- game ---------- */
+  #screen-game{position:relative;overflow:hidden;overflow:clip}
+  .game-head{
+    flex:none;display:flex;align-items:center;gap:10px;
+    padding:12px 12px 10px;border-bottom:2px solid #f1f5f2;background:#fff;
+  }
+  .game-progress{flex:1;display:flex;align-items:center;gap:9px}
+  .game-progress .bar{flex:1}
+  #game-count{font-size:11.5px;font-weight:900;color:var(--muted);min-width:30px;text-align:right}
+  .combo{
+    flex:none;display:inline-flex;align-items:center;gap:3px;background:#fff3e6;
+    color:#f08a00;font-weight:900;font-size:13px;border-radius:999px;padding:5px 10px;
+    border:2px solid #ffe2c2;
+  }
+  .combo span{font-size:13px}
+
+  .stage-nav{flex:none;display:flex;gap:6px;padding:10px 14px 0;background:#fff}
+  .stage-step{
+    flex:1;display:flex;align-items:center;justify-content:center;gap:5px;
+    font-size:10.5px;font-weight:800;color:#aab4af;padding:6px 4px;border-radius:10px;
+    background:#f6f9f7;white-space:nowrap;overflow:hidden;
+  }
+  .stage-step b{
+    width:16px;height:16px;border-radius:50%;background:#dfe6e2;color:#fff;
+    font-size:10px;display:inline-flex;align-items:center;justify-content:center;flex:none;
+  }
+  .stage-step.active{background:var(--green-l);color:var(--green-d)}
+  .stage-step.active b{background:var(--green)}
+  .stage-step.done{color:#8fbf6a}
+  .stage-step.done b{background:#a9dd7f}
+
+  .stage-scroll{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;overflow-anchor:none;padding:16px 18px 132px}
+  .stage-head{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+  .badge{
+    background:var(--green-l);color:var(--green-d);font-size:10.5px;font-weight:900;
+    padding:4px 9px;border-radius:999px;letter-spacing:-.2px;
+  }
+  .stage-head h2{font-size:19px;font-weight:900;letter-spacing:-.5px}
+  .tip{font-size:12.5px;color:var(--muted);font-weight:700;line-height:1.6;margin-bottom:14px}
+
+  .sentence-card{
+    background:linear-gradient(160deg,#ffffff,#f7fbf9);
+    border:2px solid var(--line);border-radius:22px;padding:20px 18px;
+    box-shadow:var(--shadow);
+  }
+  .sentence{font-size:22px;line-height:1.5;font-weight:800;letter-spacing:-.4px;word-break:keep-all}
+  .ko-line{
+    margin-top:12px;font-size:14px;line-height:1.65;color:#5f8a52;font-weight:700;
+    background:#f3fbe9;border-radius:12px;padding:10px 12px;
+  }
+  .ko-line.hidden{display:none}
+  .audio-row{display:flex;flex-direction:column;align-items:center;gap:14px;margin-top:22px}
+  .play-big{
+    width:78px;height:78px;border-radius:50%;border:0;cursor:pointer;
+    background:linear-gradient(160deg,#6ee00f,#48b800);
+    color:#fff;font-size:26px;display:flex;align-items:center;justify-content:center;
+    box-shadow:0 6px 0 #3b9a00, 0 10px 28px rgba(88,204,2,.28);
+    transition:transform .08s ease, box-shadow .08s ease;
+  }
+  .play-big:active{transform:translateY(4px);box-shadow:0 2px 0 #3b9a00}
+  .play-big.playing{animation:pulse 1.1s ease infinite}
+  .play-big span{padding-left:4px}
+  .tts-note{font-size:12px;color:#b0a08a;background:var(--yellow-l);border-radius:12px;padding:10px 12px;font-weight:700;line-height:1.55;text-align:center}
+  .speeds{display:flex;gap:7px}
+  .speed{
+    border:2px solid var(--line);background:#fff;border-radius:999px;
+    padding:7px 13px;font-size:12px;font-weight:900;color:#9aa5a0;cursor:pointer;
+  }
+  .speed.on{border-color:var(--blue);color:var(--blue-d);background:var(--blue-l)}
+  .ko-toggle{
+    display:block;margin:16px auto 0;border:0;background:none;
+    color:var(--blue-d);font-size:12px;font-weight:900;text-decoration:underline;cursor:pointer;
+  }
+  .mini-note{font-size:11.5px;line-height:1.6;color:var(--muted);margin-top:12px;font-weight:700}
+
+  .ko-prompt{
+    font-size:14px;font-weight:800;color:#5f8a52;background:#f3fbe9;
+    border-radius:14px;padding:12px 14px;margin-bottom:14px;line-height:1.6;
+  }
+  .answer-zone{
+    min-height:82px;border:2px dashed #d9e3dd;border-radius:18px;
+    padding:12px;display:flex;flex-wrap:wrap;gap:8px;align-content:flex-start;
+    background:#fbfdfc;transition:border-color .2s,background .2s;
+  }
+  .answer-zone.empty::before{
+    content:"아래 단어를 눌러 순서대로 놓아보세요";color:#c0c9c4;font-size:12px;font-weight:700;
+    align-self:center;margin:auto;
+  }
+  .answer-zone.filled{border-style:solid;border-color:#d8ecff;background:#f7fcff}
+  .answer-zone.shake{animation:shake .38s ease}
+  .pool{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+
+  .tile{
+    border:2px solid var(--line);border-bottom-width:4px;background:#fff;
+    border-radius:13px;padding:10px 14px;font-size:17px;font-weight:800;
+    letter-spacing:-.2px;cursor:pointer;transition:transform .08s,background .15s,border-color .15s;
+    animation:pop .16s ease;
+  }
+  .tile:active{transform:scale(.95)}
+  .tile.placed{background:#eef8ff;border-color:#c5e8ff;color:#1379ab}
+  .pool .tile{background:#fff}
+  .pool:empty{display:none}
+
+  .mini-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:14px}
+  .mini-btn{
+    border:2px solid var(--line);background:#fff;border-radius:999px;
+    padding:8px 13px;font-size:12px;font-weight:800;color:#7f8b86;cursor:pointer;
+  }
+  .mini-btn:active{background:#f6f9f7}
+  .mini-btn.hot{color:var(--blue-d);border-color:#c7e9fb;background:var(--blue-l)}
+  .attempt-note{font-size:11px;color:var(--muted);font-weight:700;margin-left:auto}
+
+  /* stage 3 */
+  .seg{display:flex;background:#eef3f0;border-radius:14px;padding:4px;margin-bottom:16px}
+  .seg-btn{
+    flex:1;border:0;background:transparent;border-radius:11px;padding:10px 8px;
+    font-size:12.5px;font-weight:900;color:#93a09a;cursor:pointer;transition:all .15s;
+  }
+  .seg-btn.on{background:#fff;color:var(--ink);box-shadow:0 2px 0 rgba(23,53,45,.06)}
+  .blank-sent{display:flex;flex-wrap:wrap;gap:6px 7px;font-size:20px;line-height:1.55;font-weight:800;letter-spacing:-.3px}
+  .blank-sent .tok{padding:2px 0}
+  .blank{
+    border:2px solid #cfe4f5;border-bottom-width:3px;background:#f3faff;color:#7fa7c4;
+    border-radius:10px;padding:2px 10px;font-size:19px;font-weight:900;cursor:pointer;
+    min-width:56px;
+  }
+  .blank.filled{background:#eaf7ff;color:#1379ab;border-color:#a9d9f7}
+  .blank.wrong{background:var(--red-l);border-color:#ffb7b7;color:var(--red-d);animation:shake .38s}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+  .chip{
+    border:2px solid var(--line);border-bottom-width:4px;background:#fff;border-radius:12px;
+    padding:9px 14px;font-size:15.5px;font-weight:800;cursor:pointer;transition:all .12s;
+  }
+  .chip:active{transform:scale(.96)}
+  .chip.used{background:#f2f5f3;color:#c3cbc7;border-color:#e9eeeb;box-shadow:none;transform:none;cursor:default}
+  .type-box{
+    width:100%;border:2px solid var(--line);border-radius:16px;padding:14px;
+    font-family:inherit;font-size:16px;line-height:1.6;font-weight:700;color:var(--ink);
+    resize:vertical;min-height:96px;background:#fbfdfc;outline:none;
+  }
+  .type-box:focus{border-color:#bfe4fb;background:#fff;box-shadow:0 0 0 4px #eaf7ff}
+  .hint-line{
+    margin-top:10px;font-size:12.5px;letter-spacing:.5px;color:#8a9691;
+    font-weight:800;word-break:break-word;line-height:1.8;
+  }
+  .reveal-line{
+    margin-top:10px;background:var(--yellow-l);border-radius:12px;padding:10px 12px;
+    font-size:13px;font-weight:800;color:#8a6a00;line-height:1.55;
+  }
+
+  /* dock & feedback */
+  .dock{
+    position:absolute;left:0;right:0;bottom:0;padding:14px 18px calc(16px + env(safe-area-inset-bottom));
+    background:linear-gradient(180deg,rgba(255,255,255,0),#fff 26%);z-index:8;
+  }
+  .feedback{
+    position:absolute;left:0;right:0;bottom:0;z-index:12;
+    padding:16px 18px calc(16px + env(safe-area-inset-bottom));
+    transform:translateY(112%);transition:transform .26s cubic-bezier(.2,.8,.2,1);
+    border-top-left-radius:22px;border-top-right-radius:22px;
+    display:flex;align-items:center;gap:10px;
+    box-shadow:0 -8px 28px rgba(23,53,45,.10);
+  }
+  .feedback.show{transform:translateY(0)}
+  .feedback.ok{background:#eafcd9}
+  .feedback.bad{background:#ffecec}
+  .fb-icon{
+    flex:none;width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    font-size:19px;font-weight:900;color:#fff;
+  }
+  .feedback.ok .fb-icon{background:var(--green)}
+  .feedback.bad .fb-icon{background:var(--red)}
+  .fb-main{min-width:0;flex:1}
+  .fb-main b{display:block;font-size:14px;font-weight:900;letter-spacing:-.3px}
+  .fb-main span{display:block;font-size:11.5px;font-weight:700;color:#7d8a84;margin-top:2px;line-height:1.45}
+  .feedback.ok .fb-main b{color:#3f8a00}
+  .feedback.bad .fb-main b{color:#c92f2f}
+  .feedback .btn{flex:none;min-height:46px;padding:12px 18px;font-size:14px}
+  .feedback.ok .btn{background:var(--green)}
+  .feedback.bad .btn{background:var(--red);box-shadow:0 4px 0 var(--red-d)}
+
+  /* summary */
+  #screen-summary{justify-content:center}
+  .summary-wrap{
+    flex:1;display:flex;flex-direction:column;justify-content:center;
+    padding:32px 22px calc(28px + env(safe-area-inset-bottom));text-align:center;
+    background:radial-gradient(600px 300px at 50% 0%,#f0fce2,rgba(240,252,226,0) 70%);
+  }
+  .trophy{font-size:64px;line-height:1;margin-bottom:10px;animation:pop .5s ease}
+  .summary-wrap h1{font-size:24px;font-weight:900;letter-spacing:-.7px;margin-bottom:6px}
+  .summary-wrap > p{font-size:13px;color:var(--muted);font-weight:700;margin-bottom:20px}
+  .sum-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:18px}
+  .sum-stat{background:#fff;border:2px solid var(--line);border-radius:16px;padding:12px 6px;box-shadow:var(--shadow)}
+  .sum-stat b{display:block;font-size:19px;font-weight:900;letter-spacing:-.5px}
+  .sum-stat small{display:block;font-size:10.5px;color:var(--muted);font-weight:800;margin-top:3px}
+  .sum-stat:nth-child(1) b{color:var(--green-d)}
+  .sum-stat:nth-child(2) b{color:var(--blue-d)}
+  .sum-stat:nth-child(3) b{color:#f08a00}
+  .sum-goal{background:#fff;border:2px solid var(--line);border-radius:16px;padding:14px;margin-bottom:16px;text-align:left;box-shadow:var(--shadow)}
+  .sum-goal .row{display:flex;justify-content:space-between;font-size:12px;font-weight:800;color:#7c8a84;margin-bottom:8px}
+  .sum-streak{font-size:12.5px;font-weight:800;color:#f08a00;margin-bottom:18px}
+  .sum-btns{display:flex;flex-direction:column;gap:9px}
+
+  /* modal */
+  .modal{
+    position:fixed;inset:0;z-index:70;display:none;align-items:flex-end;justify-content:center;
+    background:rgba(20,40,33,.42);backdrop-filter:blur(2px);
+  }
+  .modal.open{display:flex;animation:fadeIn .18s ease}
+  .modal-sheet{
+    width:100%;max-width:480px;background:#fff;border-radius:24px 24px 0 0;
+    padding:18px 18px calc(18px + env(safe-area-inset-bottom));
+    max-height:92dvh;overflow-y:auto;animation:sheetUp .26s cubic-bezier(.2,.8,.2,1);
+  }
+  @keyframes sheetUp{from{transform:translateY(40px);opacity:.4}to{transform:none;opacity:1}}
+  .sheet-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+  .sheet-head h2{font-size:19px;font-weight:900;letter-spacing:-.4px}
+  .sheet-desc{font-size:12px;color:var(--muted);font-weight:700;line-height:1.6;margin-bottom:16px}
+  .field{display:block;margin-bottom:12px}
+  .field > span{display:block;font-size:12px;font-weight:900;color:#6f7c76;margin-bottom:6px}
+  .field > span em{font-style:normal;color:var(--muted);font-weight:700}
+  .field input,.field textarea{
+    width:100%;border:2px solid var(--line);border-radius:14px;padding:11px 13px;
+    font-family:inherit;font-size:14px;font-weight:700;line-height:1.6;color:var(--ink);
+    background:#fbfdfc;outline:none;resize:vertical;
+  }
+  .field input:focus,.field textarea:focus{border-color:#bfe4fb;background:#fff;box-shadow:0 0 0 4px #eaf7ff}
+  .sheet-preview{
+    background:#f4f9f6;border-radius:11px;padding:9px 12px;font-size:11.5px;
+    font-weight:800;color:#7f8d87;margin-bottom:14px;
+  }
+  .sheet-actions{display:flex;gap:9px}
+  .sheet-actions .btn{flex:1}
+
+  /* toast + confetti */
+  .toast{
+    position:fixed;left:50%;bottom:28px;transform:translate(-50%,16px);
+    background:rgba(44,52,48,.94);color:#fff;font-size:12.5px;font-weight:700;
+    padding:11px 16px;border-radius:14px;max-width:86%;width:max-content;
+    opacity:0;pointer-events:none;transition:all .22s ease;z-index:90;text-align:center;line-height:1.5;
+  }
+  .toast.show{opacity:1;transform:translate(-50%,0)}
+  .confetti{position:fixed;inset:0;pointer-events:none;z-index:80;overflow:hidden}
+  .confetti i{position:absolute;top:-18px;width:9px;height:14px;border-radius:3px;animation:fall 1.35s ease-in forwards}
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:.001s !important;transition-duration:.001s !important}
+  }
+</style>
+</head>
+<body>
+<div class="phone" id="app">
+
+  <!-- ================= HOME ================= -->
+  <section id="screen-home" class="screen active">
+    <div class="home">
+      <header class="home-head">
+        <div class="brand">
+          <div class="logo">T</div>
+          <div>
+            <h1>TED 통암기</h1>
+            <p>하루 10분, 문장이 내 것이 됩니다</p>
+          </div>
+          <button class="icon-btn sound" id="sound-btn" data-act="toggle-sound" aria-label="효과음 켜기 또는 끄기">🔊</button>
+        </div>
+        <div class="stats">
+          <div class="stat"><span class="stat-ico">🔥</span><div><b id="stat-streak">0</b><small>연속 학습</small></div></div>
+          <div class="stat"><span class="stat-ico">⚡</span><div><b id="stat-xp">0</b><small>총 XP</small></div></div>
+          <div class="stat"><span class="stat-ico">🎯</span><div><b id="stat-goal">0/5</b><small>오늘 문장</small></div></div>
+        </div>
+      </header>
+
+      <div id="js-guard" style="background:#FFF3CD;color:#856404;border:1px solid #FFEEBA;border-radius:14px;padding:12px 14px;margin-bottom:14px;font-size:13px;line-height:1.5;">
+        ⚠️ <b>미리보기 화면에서는 버튼이 작동하지 않아요.</b><br>오른쪽 위/아래 <b>공유(□↑) → Chrome 등 브라우저 앱</b>으로 열면 바로 실행돼요!
+      </div>
+
+      <div class="goal-card">
+        <div class="goal-top">
+          <div>
+            <b>오늘의 목표</b>
+            <p id="goal-sub">문장 5개 · 약 10분</p>
+          </div>
+          <div class="goal-badge" id="goal-badge">0%</div>
+        </div>
+        <div class="bar"><i id="goal-bar"></i></div>
+        <div class="goal-foot">
+          <span id="goal-count">0 / 5 문장</span>
+          <span id="goal-hint">문장 5개면 오늘 목표 달성!</span>
+        </div>
+        <button class="btn goal-cta" data-act="quick-start" id="goal-cta">오늘의 10분 시작</button>
+      </div>
+
+      <div class="sec-head"><h2>TED 명강연</h2><span>8문장씩</span></div>
+      <div class="deck-list" id="deck-list"></div>
+
+      <div class="sec-head"><h2>내 대본</h2><span>커스텀</span></div>
+      <div class="deck-list" id="custom-list"></div>
+      <button class="add-card" data-act="open-add">＋ 내 대본 추가하기</button>
+
+      <footer class="home-foot">
+        <p>진행 상황은 이 기기에 자동 저장돼요 · 인터넷 없이도 재생됩니다</p>
+        <button class="linkish" data-act="reset-progress">학습 기록 초기화</button>
+      </footer>
+    </div>
+  </section>
+
+  <!-- ================= GAME ================= -->
+  <section id="screen-game" class="screen">
+    <header class="game-head">
+      <button class="icon-btn" data-act="quit" aria-label="학습 그만하기">✕</button>
+      <div class="game-progress">
+        <div class="bar slim"><i id="game-bar"></i></div>
+        <span id="game-count">1/5</span>
+      </div>
+      <div class="combo" id="combo-badge" hidden>🔥<span>2</span></div>
+    </header>
+
+    <div class="stage-nav" id="stage-nav">
+      <div class="stage-step" data-step="1"><b>1</b>듣고 익히기</div>
+      <div class="stage-step" data-step="2"><b>2</b>단어 조립</div>
+      <div class="stage-step" data-step="3"><b>3</b>통암기 완성</div>
+    </div>
+
+    <div class="stage-scroll" id="stage-scroll">
+      <div id="stage-body"></div>
+    </div>
+
+    <div class="dock" id="dock"></div>
+
+    <div class="feedback" id="feedback" role="status" aria-live="polite">
+      <div class="fb-icon" id="fb-icon">✓</div>
+      <div class="fb-main"><b id="fb-title"></b><span id="fb-sub"></span></div>
+      <button class="btn" id="fb-btn" data-act="fb-next">계속</button>
+    </div>
+  </section>
+
+  <!-- ================= SUMMARY ================= -->
+  <section id="screen-summary" class="screen">
+    <div class="summary-wrap">
+      <div class="trophy" id="sum-trophy">🏆</div>
+      <h1 id="sum-title">오늘의 10분 완료!</h1>
+      <p id="sum-sub">문장을 내 것으로 만들었어요</p>
+
+      <div class="sum-stats">
+        <div class="sum-stat"><b id="sum-xp">+0</b><small>획득 XP</small></div>
+        <div class="sum-stat"><b id="sum-acc">0%</b><small>첫 시도 정확도</small></div>
+        <div class="sum-stat"><b id="sum-combo">x1</b><small>최고 콤보</small></div>
+      </div>
+
+      <div class="sum-goal">
+        <div class="row"><span>오늘의 목표</span><span id="sum-goal-text">0/5 문장</span></div>
+        <div class="bar"><i id="sum-goal-bar"></i></div>
+      </div>
+
+      <p class="sum-streak" id="sum-streak">🔥 0일 연속 학습</p>
+
+      <div class="sum-btns">
+        <button class="btn full" data-act="restart">한 번 더 학습하기</button>
+        <button class="btn ghost full" data-act="home">홈으로</button>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- ================= CUSTOM DECK MODAL ================= -->
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <div class="modal-sheet">
+    <div class="sheet-head">
+      <h2 id="modal-title">내 대본 추가하기</h2>
+      <button class="icon-btn" data-act="close-add" aria-label="닫기">✕</button>
+    </div>
+    <p class="sheet-desc">TED 대본, 비즈니스 이메일, 회화 표현 무엇이든 좋아요. 문장 단위로 자동으로 나눠서 같은 게임으로 학습해요.</p>
+
+    <label class="field">
+      <span>제목</span>
+      <input id="in-title" type="text" maxlength="40" placeholder="예: 미팅 오프닝 표현">
+    </label>
+
+    <label class="field">
+      <span>영어 대본 <em>(필수)</em></span>
+      <textarea id="in-en" rows="6" placeholder="Paste your English script here.&#10;문장마다 마침표를 찍으면 문장 단위로 나뉘어요."></textarea>
+    </label>
+
+    <label class="field">
+      <span>한국어 번역 <em>(선택)</em></span>
+      <textarea id="in-ko" rows="4" placeholder="문장별로 줄바꿈해서 붙여넣으면 정확히 매칭돼요."></textarea>
+    </label>
+
+    <div class="sheet-preview" id="sheet-preview">영어 대본을 붙여넣어 주세요</div>
+
+    <div class="sheet-actions">
+      <button class="btn ghost" data-act="close-add">취소</button>
+      <button class="btn" data-act="save-deck">저장하고 시작</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<div class="confetti" id="confetti"></div>
+
+<script>
+(function(){
+  'use strict';
+
+  /* =========================================================
+     작은 도우미들
+  ========================================================= */
+  var $ = function(sel, root){ return (root || document).querySelector(sel); };
+  var $$ = function(sel, root){ return Array.prototype.slice.call((root || document).querySelectorAll(sel)); };
+  var ESC = {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'};
+  function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return ESC[c]; }); }
+  function pad2(n){ return (n < 10 ? '0' : '') + n; }
+  function ymd(d){ return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate()); }
+  function todayStr(){ return ymd(new Date()); }
+  function yesterdayStr(){ return ymd(new Date(Date.now() - 86400000)); }
+  function shuffle(arr){
+    for(var i = arr.length - 1; i > 0; i--){
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = arr[i]; arr[i] = arr[j]; arr[j] = t;
+    }
+    return arr;
+  }
+  // 비교용 정규화: 대소문자·문장부호·중복 공백 무시
+  function norm(s){
+    return String(s == null ? '' : s).toLowerCase()
+      .replace(/[\u2018\u2019\u0060]/g, "'")
+      .replace(/[\u201c\u201d]/g, '"')
+      .replace(/[^a-z0-9' ]+/g, ' ')
+      .replace(/\s+/g, ' ').trim();
+  }
+  function cleanWord(w){
+    return String(w || '').replace(/^[^A-Za-z']+|[^A-Za-z']+$/g, '');
+  }
+
+  var STOP = {};
+  ('a an the and or but if of to in on at for with from by as is are was were be been being it its this that these those ' +
+   'i you he she we they me my your his her our their not no so do does did doing have has had will would can could ' +
+   'just very really more most than then there here what who which when where why how').split(' ').forEach(function(w){ STOP[w] = true; });
+
+  /* =========================================================
+     콘텐츠 — 실제 TED 발췌 (학습용으로 문장부호만 정리)
+  ========================================================= */
+  var DECKS = [
+    {
+      id: 'sinek', ko: '왜부터 시작하라', en: 'How great leaders inspire action',
+      speaker: 'Simon Sinek', emoji: '💡', tone: 'amber',
+      sentences: [
+        { en: 'Every single person, every single organization on the planet knows what they do.',
+          ko: '지구상의 모든 사람, 모든 조직은 자신이 무엇을 하는지 알고 있습니다.' },
+        { en: 'But very, very few people or organizations know why they do what they do.',
+          ko: '하지만 왜 그 일을 하는지 아는 사람이나 조직은 아주 드뭅니다.' },
+        { en: 'By "why" I mean: What\'s your purpose? What\'s your cause? What\'s your belief?',
+          ko: '\u2018왜\u2019란 당신의 목적, 대의, 신념이 무엇인지를 뜻합니다.' },
+        { en: 'We go from the clearest thing to the fuzziest thing.',
+          ko: '우리는 가장 명확한 것에서 가장 모호한 것으로 나아갑니다.' },
+        { en: "People don't buy what you do; they buy why you do it.",
+          ko: '사람들은 당신이 무엇을 하는지가 아니라, 왜 하는지를 삽니다.' },
+        { en: 'The goal is not to do business with everybody who needs what you have.',
+          ko: '목표는 당신의 것이 필요한 모든 사람과 거래하는 것이 아닙니다.' },
+        { en: 'The goal is to do business with people who believe what you believe.',
+          ko: '목표는 당신이 믿는 것을 함께 믿는 사람과 거래하는 것입니다.' },
+        { en: 'If you talk about what you believe, you will attract those who believe what you believe.',
+          ko: '당신이 믿는 것을 이야기하면, 같은 것을 믿는 사람들이 모여듭니다.' }
+      ]
+    },
+    {
+      id: 'urban', ko: '미루기의 뇌', en: 'Inside the mind of a master procrastinator',
+      speaker: 'Tim Urban', emoji: '🐒', tone: 'purple',
+      sentences: [
+        { en: 'The Instant Gratification Monkey does not seem like a guy you want behind the wheel.',
+          ko: '즉각적 만족 원숭이는 운전대를 맡기고 싶은 상대가 아닙니다.' },
+        { en: 'He lives entirely in the present moment.',
+          ko: '그는 오직 현재에만 살아갑니다.' },
+        { en: "The fun you have in the Dark Playground isn't actually fun, because it's completely unearned.",
+          ko: '어둠의 놀이터에서의 즐거움은 사실 즐겁지 않습니다. 아무 자격 없이 얻은 것이니까요.' },
+        { en: 'The Panic Monster is dormant most of the time.',
+          ko: '공황 괴물은 대부분의 시간 동안 잠들어 있습니다.' },
+        { en: 'He suddenly wakes up anytime a deadline gets too close.',
+          ko: '마감이 너무 가까워지면 그는 갑자기 깨어납니다.' },
+        { en: "He's the only thing the Monkey is terrified of.",
+          ko: '그는 원숭이가 무서워하는 유일한 존재입니다.' },
+        { en: 'There is a second kind of procrastination that happens when there is no deadline.',
+          ko: '마감이 없을 때 일어나는 두 번째 종류의 미루기가 있습니다.' },
+        { en: "In all of these non-deadline situations, the Panic Monster doesn't show up.",
+          ko: '마감이 없는 이런 상황들에서는 공황 괴물이 나타나지 않습니다.' }
+      ]
+    },
+    {
+      id: 'cuddy', ko: '몸짓이 나를 바꾼다', en: 'Your body language may shape who you are',
+      speaker: 'Amy Cuddy', emoji: '💪', tone: 'blue',
+      sentences: [
+        { en: 'We make sweeping judgments and inferences from body language.',
+          ko: '우리는 몸짓에서 광범위한 판단과 추론을 이끌어냅니다.' },
+        { en: 'We are also influenced by our nonverbals, our thoughts and our feelings and our physiology.',
+          ko: '우리는 우리 자신의 비언어, 곧 생각과 감정과 생리에 영향을 받습니다.' },
+        { en: 'What do we do when we feel powerless? We do exactly the opposite.',
+          ko: '힘이 없다고 느낄 때 우리는 어떻게 할까요? 정반대로 행동합니다.' },
+        { en: 'So you make yourself big, you stretch out, you take up space.',
+          ko: '그래서 몸을 크게 만들고, 쭉 뻗고, 공간을 차지합니다.' },
+        { en: 'Can you fake it till you make it?',
+          ko: '될 때까지 가짜로라도 해낼 수 있을까요?' },
+        { en: 'Our bodies change our minds, and our minds change our behavior, and our behavior changes our outcomes.',
+          ko: '몸이 마음을 바꾸고, 마음이 행동을 바꾸고, 행동이 결과를 바꿉니다.' },
+        { en: "Don't fake it till you make it. Fake it till you become it.",
+          ko: '가짜로 성공할 때까지 하지 말고, 진짜 그 사람이 될 때까지 하세요.' },
+        { en: 'Tiny tweaks can lead to big changes.',
+          ko: '작은 조정이 큰 변화를 이끌어냅니다.' }
+      ]
+    }
+  ];
+
+  var jsGuard = document.getElementById('js-guard');
+  if(jsGuard) jsGuard.style.display = 'none';
+
+  /* =========================================================
+     저장소
+  ========================================================= */
+  var KEY = 'tedMemoryGame.v1';
+  var DEFAULTS = {
+    xp: 0, streak: 0, streakDate: '', todayDate: '', todayMastered: 0,
+    lastDeckId: '', customDecks: [], sound: true, speed: 1,
+    bestCombo: 0, totalSentences: 0, daysStudied: 0
+  };
+  function loadStore(){
+    var raw = null;
+    try { raw = localStorage.getItem(KEY); } catch(e) {}
+    var data = {};
+    if(raw){ try { data = JSON.parse(raw) || {}; } catch(e){ data = {}; } }
+    var out = {};
+    for(var k in DEFAULTS){ if(Object.prototype.hasOwnProperty.call(DEFAULTS, k)) out[k] = DEFAULTS[k]; }
+    for(var k2 in data){ if(Object.prototype.hasOwnProperty.call(data, k2)) out[k2] = data[k2]; }
+    return out;
+  }
+  var store = loadStore();
+  function save(){
+    try { localStorage.setItem(KEY, JSON.stringify(store)); } catch(e) {}
+  }
+  function rollDay(){
+    if(!Array.isArray(store.customDecks)) store.customDecks = [];
+    if(!store.todayDate){ store.todayDate = todayStr(); store.todayMastered = 0; }
+    if(store.todayDate !== todayStr()){ store.todayDate = todayStr(); store.todayMastered = 0; }
+    if(typeof store.xp !== 'number' || isNaN(store.xp)) store.xp = 0;
+    if(typeof store.speed !== 'number' || ![0.8, 1, 1.15].some(function(v){ return Math.abs(v - store.speed) < 0.001; })) store.speed = 1;
+    if(typeof store.sound !== 'boolean') store.sound = true;
+  }
+  rollDay();
+
+  function allDecks(){ return DECKS.concat(store.customDecks); }
+  function getDeck(id){ return allDecks().filter(function(d){ return d.id === id; })[0] || null; }
+
+  /* =========================================================
+     음성 (Web Speech API)
+  ========================================================= */
+  function ttsOK(){ return !!(window.speechSynthesis && window.SpeechSynthesisUtterance); }
+  function pickVoice(){
+    if(!ttsOK()) return null;
+    var voices = [];
+    try { voices = window.speechSynthesis.getVoices() || []; } catch(e){ return null; }
+    if(!voices.length) return null;
+    var preferred = voices.filter(function(v){
+      return /en[-_]US/i.test(v.lang) && /samantha|google us english|aria|jenny|zira|allison|ava/i.test(v.name);
+    });
+    if(preferred.length) return preferred[0];
+    var us = voices.filter(function(v){ return /en[-_]US/i.test(v.lang); });
+    if(us.length) return us[0];
+    var en = voices.filter(function(v){ return /^en/i.test(v.lang); });
+    return en.length ? en[0] : null;
+  }
+  function speak(text){
+    if(!ttsOK()){ toast('이 환경에서는 음성 재생이 지원되지 않아요. 문장을 눈으로 읽으며 따라 해보세요.'); return; }
+    try {
+      var synth = window.speechSynthesis;
+      synth.cancel();
+      var u = new SpeechSynthesisUtterance(text);
+      u.lang = 'en-US';
+      u.rate = stageState ? stageState.speed : 1;
+      u.pitch = 1;
+      var v = pickVoice();
+      if(v) u.voice = v;
+      var playBtn = $('.play-big');
+      if(playBtn) playBtn.classList.add('playing');
+      u.onend = function(){ if(playBtn) playBtn.classList.remove('playing'); };
+      u.onerror = function(){ if(playBtn) playBtn.classList.remove('playing'); };
+      synth.speak(u);
+    } catch(e){
+      toast('음성 재생을 시작할 수 없어요. 잠시 후 다시 시도해주세요.');
+    }
+  }
+  if(ttsOK()){
+    try {
+      window.speechSynthesis.onvoiceschanged = function(){ /* 다음 speak 때 목록을 다시 읽어요 */ };
+      window.speechSynthesis.getVoices();
+    } catch(e){}
+  }
+
+  /* =========================================================
+     효과음 (WebAudio, 외부 파일 없음)
+  ========================================================= */
+  var audioCtx = null;
+  function tone(freq, dur, type, gain, delay){
+    if(!store.sound) return;
+    try {
+      var AC = window.AudioContext || window.webkitAudioContext;
+      if(!AC) return;
+      if(!audioCtx) audioCtx = new AC();
+      if(audioCtx.state === 'suspended' && audioCtx.resume) audioCtx.resume();
+      var t0 = audioCtx.currentTime + (delay || 0);
+      var o = audioCtx.createOscillator();
+      var g = audioCtx.createGain();
+      o.type = type || 'sine';
+      o.frequency.value = freq;
+      g.gain.setValueAtTime(0.0001, t0);
+      g.gain.exponentialRampToValueAtTime(gain || 0.05, t0 + 0.012);
+      g.gain.exponentialRampToValueAtTime(0.0001, t0 + (dur || 0.12));
+      o.connect(g); g.connect(audioCtx.destination);
+      o.start(t0); o.stop(t0 + (dur || 0.12) + 0.03);
+    } catch(e){}
+  }
+  function buzz(pattern){
+    try { if(navigator.vibrate) navigator.vibrate(pattern); } catch(e){}
+  }
+  function shake(el){
+    if(!el) return;
+    el.classList.remove('shake');
+    void el.offsetWidth;
+    el.classList.add('shake');
+    setTimeout(function(){ el.classList.remove('shake'); }, 420);
+  }
+  function sfxOk(){ tone(660, 0.1, 'triangle', 0.05, 0); tone(880, 0.16, 'triangle', 0.05, 0.08); }
+  function sfxBad(){ tone(180, 0.2, 'sawtooth', 0.035, 0); }
+  function sfxWin(){
+    [523, 659, 784, 1046].forEach(function(f, i){ tone(f, 0.16, 'triangle', 0.05, i * 0.09); });
+  }
+
+  /* =========================================================
+     토스트 & 색종이
+  ========================================================= */
+  var toastTimer = null;
+  function toast(msg){
+    var el = $('#toast');
+    if(!el) return;
+    el.textContent = msg;
+    el.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ el.classList.remove('show'); }, 2700);
+  }
+  var CONFETTI_COLORS = ['#58cc02','#1cb0f6','#ffc800','#ff4b4b','#ce82ff','#ff9600'];
+  function confetti(n){
+    var layer = $('#confetti');
+    if(!layer) return;
+    n = n || 24;
+    for(var i = 0; i < n; i++){
+      var p = document.createElement('i');
+      p.style.left = (Math.random() * 100) + '%';
+      p.style.background = CONFETTI_COLORS[i % CONFETTI_COLORS.length];
+      p.style.animationDelay = (Math.random() * 0.25) + 's';
+      p.style.width = (6 + Math.random() * 6) + 'px';
+      p.style.height = (9 + Math.random() * 8) + 'px';
+      layer.appendChild(p);
+      (function(node){ setTimeout(function(){ if(node.parentNode) node.parentNode.removeChild(node); }, 1900); })(p);
+    }
+  }
+
+  /* =========================================================
+     문장 자르기 (커스텀 대본)
+  ========================================================= */
+  function splitSentences(text){
+    var src = String(text || '').replace(/\r\n?/g, '\n').trim();
+    if(!src) return [];
+    var out = [];
+    src.split(/\n+/).forEach(function(line){
+      line = line.trim();
+      if(!line) return;
+      var parts = line.match(/[^.!?\u2026]+[.!?\u2026]+["')\]]*|[^.!?\u2026]+$/g);
+      if(!parts) parts = [line];
+      parts.forEach(function(p){
+        var s = p.trim();
+        if(s.length > 1) out.push(s);
+      });
+    });
+    return out;
+  }
+  function pairTranslations(enList, koRaw){
+    if(!String(koRaw || '').trim()) return enList.map(function(){ return ''; });
+    var koList = splitSentences(koRaw);
+    if(koList.length === enList.length) return koList;
+    var koLines = String(koRaw).split(/\n+/).map(function(s){ return s.trim(); }).filter(Boolean);
+    if(koLines.length === enList.length) return koLines;
+    return enList.map(function(_, i){ return koList[Math.min(i, koList.length - 1)] || ''; });
+  }
+
+  /* =========================================================
+     세션 상태
+  ========================================================= */
+  var session = null;
+  var stageState = null;
+
+  function senTokens(){
+    return session.sentences[session.index].en.trim().split(/\s+/);
+  }
+  function shuffledIds(n){
+    var ids = [];
+    for(var i = 0; i < n; i++) ids.push(i);
+    if(n < 2) return ids;
+    var orig = ids.join(',');
+    for(var k = 0; k < 10; k++){
+      shuffle(ids);
+      if(ids.join(',') !== orig) break;
+    }
+    return ids;
+  }
+  function pickBlanks(tokens){
+    var counts = {};
+    tokens.forEach(function(w){
+      var c = cleanWord(w).toLowerCase();
+      if(c) counts[c] = (counts[c] || 0) + 1;
+    });
+    var cands = [];
+    tokens.forEach(function(w, i){
+      var c = cleanWord(w);
+      var lc = c.toLowerCase();
+      if(c.length >= 4 && !STOP[lc] && counts[lc] === 1){
+        cands.push(i);
+      }
+    });
+    shuffle(cands);
+    var want = tokens.length > 9 ? 2 : 1;
+    return cands.slice(0, want).sort(function(a, b){ return a - b; });
+  }
+  var FALLBACK_DISTRACTORS = ['always','people','because','really','change','future','simple','story','matter','better','moment','reason'];
+  function buildChips(tokens, blanks, deck){
+    var answers = blanks.map(function(i){ return tokens[i]; });
+    var answerKeys = answers.map(function(w){ return norm(w); });
+    var used = {};
+    var pool = [];
+    (deck.sentences || []).forEach(function(s){
+      String(s.en || '').split(/\s+/).forEach(function(w){
+        var c = cleanWord(w);
+        var lc = norm(c);
+        if(c.length >= 3 && lc && answerKeys.indexOf(lc) < 0 && !used[lc]){
+          used[lc] = true; pool.push(c);
+        }
+      });
+    });
+    shuffle(pool);
+    var need = blanks.length >= 2 ? 2 : 3;
+    var distractors = [];
+    for(var i = 0; i < pool.length && distractors.length < need; i++){
+      if(tokens.map(norm).indexOf(norm(pool[i])) < 0) distractors.push(pool[i]);
+    }
+    for(var j = 0; j < FALLBACK_DISTRACTORS.length && distractors.length < need; j++){
+      var f = FALLBACK_DISTRACTORS[j];
+      if(answerKeys.indexOf(norm(f)) < 0 && distractors.indexOf(f) < 0) distractors.push(f);
+    }
+    var all = answers.concat(distractors).map(function(w, idx){ return { id: idx, w: w }; });
+    return shuffle(all);
+  }
+
+  function startSession(deckId){
+    var deck = getDeck(deckId);
+    if(!deck || !deck.sentences.length){ toast('학습할 문장이 없어요.'); return; }
+    var list = deck.sentences.slice(0, 5);
+    session = {
+      deck: deck, sentences: list, index: 0, stage: 1,
+      xpEarned: 0, mastered: 0, checks: 0, perfectChecks: 0,
+      combo: 0, bestCombo: 0
+    };
+    store.lastDeckId = deck.id;
+    save();
+    showScreen('game');
+    enterSentence(0);
+  }
+
+  function enterSentence(i){
+    session.index = i;
+    session.stage = 1;
+    var tokens = senTokens();
+    var blanks = pickBlanks(tokens);
+    stageState = {
+      speed: store.speed || 1,
+      koShown: false,
+      scramble: { order: shuffledIds(tokens.length), placed: [], tries: 0, hinted: false },
+      recall: {
+        mode: blanks.length ? 'blank' : 'typing',
+        blanks: blanks,
+        chips: buildChips(tokens, blanks, session.deck),
+        slots: blanks.map(function(){ return null; }),
+        wrongSlots: [],
+        tries: 0,
+        typed: '',
+        hint: false,
+        revealed: false
+      },
+      fb: null
+    };
+    renderGame();
+    var sc = $('#stage-scroll');
+    if(sc) sc.scrollTop = 0;
+  }
+
+  /* =========================================================
+     XP · 연속 학습 · 오늘 목표
+  ========================================================= */
+  function effectiveStreak(){
+    if(store.streakDate === todayStr() || store.streakDate === yesterdayStr()) return store.streak || 0;
+    return 0;
+  }
+  function touchStreak(){
+    var t = todayStr();
+    if(store.streakDate === t) return;
+    store.streak = (store.streakDate === yesterdayStr()) ? (store.streak || 0) + 1 : 1;
+    store.streakDate = t;
+    save();
+  }
+  function countMastered(){
+    if(store.todayDate !== todayStr()){ store.todayDate = todayStr(); store.todayMastered = 0; }
+    store.todayMastered = (store.todayMastered || 0) + 1;
+    store.totalSentences = (store.totalSentences || 0) + 1;
+    save();
+  }
+  function addXp(n){
+    n = Math.max(0, Math.round(n));
+    store.xp = (store.xp || 0) + n;
+    if(session) session.xpEarned += n;
+    if(session && session.combo > (store.bestCombo || 0)) store.bestCombo = session.combo;
+    save();
+    updateStats();
+  }
+
+  /* =========================================================
+     화면 전환
+  ========================================================= */
+  function showScreen(name){
+    $$('.screen').forEach(function(s){ s.classList.remove('active'); });
+    var el = document.getElementById('screen-' + name);
+    if(!el) return;
+    el.classList.add('active');
+    el.scrollTop = 0;
+    if(name === 'home') renderHome();
+  }
+
+  /* =========================================================
+     홈 렌더링
+  ========================================================= */
+  function deckCard(d){
+    var accent = d.tone || 'mint';
+    return '' +
+      '<div class="deck-card tone-' + accent + '">' +
+        '<button class="deck-main" data-act="start-deck" data-deck="' + esc(d.id) + '">' +
+          '<span class="deck-emoji">' + (d.emoji || '📄') + '</span>' +
+          '<span class="deck-info">' +
+            '<b>' + esc(d.ko) + '</b>' +
+            '<small>' + esc(d.en || '') + '</small>' +
+            '<span class="deck-tags"><i>' + esc(d.speaker || '내 대본') + '</i><i>' + d.sentences.length + '문장</i></span>' +
+          '</span>' +
+          '<span class="deck-go">▶</span>' +
+        '</button>' +
+        (d.custom ? '<button class="deck-del" data-act="delete-deck" data-deck="' + esc(d.id) + '" aria-label="대본 삭제">✕</button>' : '') +
+      '</div>';
+  }
+  function renderHome(){
+    var streak = effectiveStreak();
+    $('#stat-streak').textContent = streak;
+    $('#stat-xp').textContent = store.xp || 0;
+    var done = Math.min(store.todayMastered || 0, 5);
+    $('#stat-goal').textContent = done + '/5';
+
+    var pct = Math.min(100, Math.round((store.todayMastered || 0) / 5 * 100));
+    $('#goal-bar').style.width = pct + '%';
+    $('#goal-badge').textContent = pct >= 100 ? '완료' : pct + '%';
+    $('#goal-count').textContent = (store.todayMastered || 0) + ' / 5 문장';
+    $('#goal-hint').textContent = pct >= 100 ? '오늘 목표 달성! 🎉' : ('약 ' + Math.max(1, (5 - done) * 2) + '분 남았어요');
+    $('#goal-sub').textContent = pct >= 100 ? '문장 5개 완료 · 내일도 만나요' : '문장 5개 · 약 10분';
+    $('#goal-cta').textContent = pct >= 100 ? '한 번 더 학습하기' : ((store.todayMastered || 0) > 0 ? '이어서 학습하기' : '오늘의 10분 시작');
+
+    var soundBtn = $('#sound-btn');
+    if(soundBtn) soundBtn.textContent = store.sound ? '🔊' : '🔇';
+
+    $('#deck-list').innerHTML = DECKS.map(deckCard).join('');
+
+    var customList = $('#custom-list');
+    if(store.customDecks.length){
+      customList.innerHTML = store.customDecks.map(deckCard).join('');
+    } else {
+      customList.innerHTML = '<div class="empty-custom">붙여넣은 대본이 여기에 쌓여요. 나만의 문장으로도 같은 게임을 즐겨보세요.</div>';
+    }
+  }
+  function updateStats(){
+    var el = $('#stat-xp');
+    if(el) el.textContent = store.xp || 0;
+    var streakEl = $('#stat-streak');
+    if(streakEl) streakEl.textContent = effectiveStreak();
+  }
+
+  /* =========================================================
+     게임 렌더링
+  ========================================================= */
+  function htmlStage1(sen){
+    var tts = ttsOK();
+    var hasKo = !!(sen.ko && sen.ko.trim());
+    var speedBtns = [0.8, 1, 1.15].map(function(sp){
+      var label = sp === 1 ? '1.0x' : sp + 'x';
+      var on = Math.abs(stageState.speed - sp) < 0.001 ? ' on' : '';
+      return '<button class="speed' + on + '" data-act="speed" data-speed="' + sp + '">' + label + '</button>';
+    }).join('');
+
+    return '' +
+      '<div class="stage-head"><span class="badge">1단계</span><h2>듣고 익히기</h2></div>' +
+      '<p class="tip">문장을 듣고 소리 내어 따라 말해보세요. 세 번 반복하면 훨씬 잘 남아요.</p>' +
+      '<div class="sentence-card">' +
+        '<p class="sentence">' + esc(sen.en) + '</p>' +
+        (hasKo ? '<p class="ko-line' + (stageState.koShown ? '' : ' hidden') + '">' + esc(sen.ko) + '</p>' : '') +
+        '<div class="audio-row">' +
+          (tts
+            ? '<button class="play-big" data-act="play-audio" aria-label="문장 듣기"><span>▶</span></button>'
+            : '<div class="tts-note">이 브라우저에서는 음성 재생을 지원하지 않아요.<br>문장을 눈으로 읽으며 따라 해보세요.</div>') +
+          '<div class="speeds">' + speedBtns + '</div>' +
+        '</div>' +
+        (hasKo ? '<button class="ko-toggle" data-act="toggle-ko">' + (stageState.koShown ? '한국어 숨기기' : '한국어 보기') + '</button>' : '') +
+      '</div>' +
+      (tts ? '' : '<p class="mini-note">소리가 나지 않아도 괜찮아요. 영어 문장을 천천히 읽고 다음 단계로 넘어가면, 단어 조립과 통암기 게임으로 같은 문장을 익힐 수 있어요.</p>');
+  }
+
+  function htmlStage2(sen){
+    var tokens = senTokens();
+    var st = stageState.scramble;
+    var placedIds = st.placed.map(function(p){ return p.id; });
+    var poolIds = st.order.filter(function(id){ return placedIds.indexOf(id) < 0; });
+
+    var placedHtml = st.placed.map(function(p){
+      return '<button class="tile placed" data-act="unplace" data-id="' + p.id + '">' + esc(tokens[p.id]) + '</button>';
+    }).join('');
+
+    var poolHtml = poolIds.map(function(id){
+      return '<button class="tile" data-act="place" data-id="' + id + '">' + esc(tokens[id]) + '</button>';
+    }).join('');
+
+    return '' +
+      '<div class="stage-head"><span class="badge">2단계</span><h2>단어 블록 조립</h2></div>' +
+      '<p class="tip">뜻을 떠올리며 단어를 순서대로 놓아보세요. 놓은 단어를 누르면 다시 내려와요.</p>' +
+      (sen.ko ? '<div class="ko-prompt">' + esc(sen.ko) + '</div>' : '') +
+      '<div class="answer-zone' + (st.placed.length ? ' filled' : ' empty') + '">' + placedHtml + '</div>' +
+      '<div class="pool">' + poolHtml + '</div>' +
+      '<div class="mini-actions">' +
+        '<button class="mini-btn" data-act="hint-scramble">💡 힌트</button>' +
+        (ttsOK() ? '<button class="mini-btn" data-act="play-audio">🔊 문장 듣기</button>' : '') +
+        '<span class="attempt-note">' + (st.placed.length ? st.placed.length + ' / ' + tokens.length + ' 단어' : '') + '</span>' +
+      '</div>';
+  }
+
+  function blankSentenceHtml(tokens, r){
+    return tokens.map(function(w, i){
+      var bi = r.blanks.indexOf(i);
+      if(bi < 0) return '<span class="tok">' + esc(w) + '</span>';
+      var chipId = r.slots[bi];
+      var chip = null;
+      for(var k = 0; k < r.chips.length; k++){ if(r.chips[k].id === chipId) chip = r.chips[k]; }
+      var wrong = r.wrongSlots.indexOf(bi) >= 0;
+      return '<button class="blank' + (chip ? ' filled' : '') + (wrong ? ' wrong' : '') + '" data-act="blank-clear" data-slot="' + bi + '">' +
+        (chip ? esc(chip.w) : '____') + '</button>';
+    }).join('');
+  }
+
+  function firstLetterHint(s){
+    return String(s).split(/\s+/).map(function(w){
+      var c = cleanWord(w);
+      if(!c) return w;
+      return c.charAt(0) + new Array(Math.max(1, c.length)).join('·');
+    }).join('  ');
+  }
+
+  function htmlStage3(sen){
+    var tokens = senTokens();
+    var r = stageState.recall;
+    var seg = '' +
+      '<div class="seg">' +
+        '<button class="seg-btn' + (r.mode === 'blank' ? ' on' : '') + '" data-act="mode" data-mode="blank">빈칸 채우기</button>' +
+        '<button class="seg-btn' + (r.mode === 'typing' ? ' on' : '') + '" data-act="mode" data-mode="typing">전체 입력</button>' +
+      '</div>';
+
+    var body = '';
+    if(r.mode === 'blank'){
+      var chipsHtml = r.chips.map(function(c){
+        var used = r.slots.indexOf(c.id) >= 0;
+        return '<button class="chip' + (used ? ' used' : '') + '" data-act="chip" data-chip="' + c.id + '"' + (used ? ' disabled' : '') + '>' + esc(c.w) + '</button>';
+      }).join('');
+      body = '' +
+        '<div class="sentence-card">' +
+          '<div class="blank-sent">' + blankSentenceHtml(tokens, r) + '</div>' +
+        '</div>' +
+        '<div class="chips">' + chipsHtml + '</div>' +
+        '<div class="mini-actions">' +
+          (ttsOK() ? '<button class="mini-btn" data-act="play-audio">🔊 다시 듣기</button>' : '') +
+          '<span class="attempt-note">빈칸 ' + r.blanks.length + '개</span>' +
+        '</div>';
+    } else {
+      var hintHtml = r.hint ? '<p class="hint-line">' + esc(firstLetterHint(sen.en)) + '</p>' : '';
+      var revealHtml = r.revealed ? '<p class="reveal-line">정답: ' + esc(sen.en) + '</p>' : '';
+      body = '' +
+        (sen.ko ? '<div class="ko-prompt">' + esc(sen.ko) + '</div>' : '') +
+        '<textarea class="type-box" id="recall-input" rows="3" placeholder="영문장을 그대로 입력하거나, 아래 마이크로 말해보세요.">' + esc(r.typed) + '</textarea>' +
+        hintHtml + revealHtml +
+        '<div class="mini-actions">' +
+          '<button class="mini-btn' + (r.hint ? ' hot' : '') + '" data-act="hint-recall">첫 글자 힌트</button>' +
+          (ttsOK() ? '<button class="mini-btn" data-act="play-audio">🔊 다시 듣기</button>' : '') +
+          (speechRecognitionCtor() ? '<button class="mini-btn" data-act="mic">🎤 말로 말하기</button>' : '') +
+          (r.tries >= 2 ? '<button class="mini-btn" data-act="reveal">정답 보기</button>' : '') +
+        '</div>';
+    }
+
+    return '' +
+      '<div class="stage-head"><span class="badge">3단계</span><h2>통암기 완성</h2></div>' +
+      '<p class="tip">이제 문장을 스스로 완성해보세요. 막히면 힌트를 써도 괜찮아요.</p>' +
+      seg + body;
+  }
+
+  function renderGame(){
+    if(!session) return;
+    var sen = session.sentences[session.index];
+    var total = session.sentences.length;
+
+    $('#game-count').textContent = (session.index + 1) + '/' + total;
+    var pct = ((session.index * 3) + (session.stage - 1)) / (total * 3) * 100;
+    $('#game-bar').style.width = Math.max(3, Math.min(100, pct)) + '%';
+
+    var combo = $('#combo-badge');
+    if(session.combo > 1){ combo.hidden = false; $('span', combo).textContent = session.combo; }
+    else { combo.hidden = true; }
+
+    $$('#stage-nav .stage-step').forEach(function(el){
+      var n = parseInt(el.getAttribute('data-step'), 10);
+      el.classList.toggle('active', n === session.stage);
+      el.classList.toggle('done', n < session.stage);
+    });
+
+    var body = $('#stage-body');
+    if(session.stage === 1) body.innerHTML = htmlStage1(sen);
+    else if(session.stage === 2) body.innerHTML = htmlStage2(sen);
+    else body.innerHTML = htmlStage3(sen);
+
+    var dock = $('#dock');
+    if(session.stage === 1){
+      dock.innerHTML = '<button class="btn full" data-act="next-stage">다음 단계로</button>';
+    } else if(session.stage === 2){
+      var ready = stageState.scramble.placed.length === senTokens().length;
+      dock.innerHTML = '<button class="btn full" data-act="check-scramble"' + (ready ? '' : ' disabled') + '>확인</button>';
+    } else {
+      dock.innerHTML = '<button class="btn full" data-act="check-recall">확인</button>';
+    }
+
+    var fb = stageState.fb;
+    var panel = $('#feedback');
+    if(fb){
+      panel.classList.add('show');
+      panel.classList.toggle('ok', fb.type === 'success');
+      panel.classList.toggle('bad', fb.type !== 'success');
+      $('#fb-icon').textContent = fb.type === 'success' ? '✓' : '!';
+      $('#fb-title').textContent = fb.title;
+      $('#fb-sub').textContent = fb.sub || '';
+      $('#fb-btn').textContent = fb.btn || '계속';
+      $('#fb-btn').className = 'btn';
+      dock.style.visibility = 'hidden';
+    } else {
+      panel.classList.remove('show');
+      dock.style.visibility = 'visible';
+    }
+  }
+
+  /* =========================================================
+     게임 진행
+  ========================================================= */
+  function scrollStageTop(){
+    var sc = $('#stage-scroll');
+    if(sc) sc.scrollTop = 0;
+  }
+  function nextStage(){
+    if(!session || session.stage !== 1) return;
+    session.stage = 2;
+    stageState.fb = null;
+    renderGame();
+    scrollStageTop();
+  }
+  function hintScramble(){
+    var tokens = senTokens();
+    var st = stageState.scramble;
+    var k = 0;
+    while(k < st.placed.length && st.placed[k].id === k) k++;
+    st.placed = st.placed.slice(0, k);
+    if(k < tokens.length){
+      st.placed.push({ id: k, w: tokens[k] });
+      st.hinted = true;
+      toast('힌트: ' + (k + 1) + '번째 단어까지 맞춰드렸어요.');
+    } else {
+      toast('이미 순서가 모두 맞아요. 확인을 눌러보세요!');
+    }
+    renderGame();
+  }
+  function checkScramble(){
+    if(!session) return;
+    var tokens = senTokens();
+    var st = stageState.scramble;
+    st.tries++;
+    session.checks++;
+    var ok = st.placed.length === tokens.length && st.placed.every(function(p, i){ return p.id === i; });
+    var first = st.tries === 1 && !st.hinted;
+
+    if(ok){
+      if(first){ session.perfectChecks++; session.combo++; }
+      var xp = first ? 15 : 8;
+      addXp(xp);
+      sfxOk();
+      buzz(18);
+      if(first) confetti(10);
+      stageState.fb = {
+        type: 'success',
+        title: '정확해요! +' + xp + ' XP',
+        sub: first ? (session.combo > 1 ? '콤보 x' + session.combo + ' · 완벽한 조립이에요!' : '완벽한 조립이에요!') : '끝까지 맞췄어요. 다음은 통암기!',
+        btn: '다음 단계',
+        next: 'to3'
+      };
+    } else {
+      session.combo = 0;
+      sfxBad();
+      buzz([20, 40, 20]);
+      var k = 0;
+      while(k < st.placed.length && st.placed[k].id === k) k++;
+      stageState.fb = {
+        type: 'error',
+        title: '순서가 조금 달라요',
+        sub: '힌트: ' + (k + 1) + '번째 단어부터 다시 확인해보세요.',
+        btn: '다시 시도',
+        next: 'retry'
+      };
+    }
+    renderGame();
+    var zone = $('.answer-zone');
+    if(zone && !ok) shake(zone);
+  }
+  function checkRecall(){
+    if(!session) return;
+    var sen = session.sentences[session.index];
+    var tokens = senTokens();
+    var r = stageState.recall;
+    r.tries++;
+    session.checks++;
+
+    var ok = false;
+    if(r.mode === 'blank'){
+      ok = r.blanks.every(function(bi, n){
+        var chipId = r.slots[n];
+        var chip = null;
+        for(var k = 0; k < r.chips.length; k++){ if(r.chips[k].id === chipId) chip = r.chips[k]; }
+        return !!chip && norm(chip.w) === norm(tokens[bi]);
+      });
+    } else {
+      ok = norm(r.typed).length > 0 && norm(r.typed) === norm(sen.en);
+    }
+
+    var first = r.tries === 1 && !r.hint && !r.revealed;
+
+    if(ok){
+      if(first){ session.perfectChecks++; session.combo++; }
+      var xp = r.revealed ? 4 : (first ? 20 : (r.tries === 2 ? 12 : 6));
+      addXp(xp);
+      session.mastered++;
+      countMastered();
+      touchStreak();
+      var bonus = 5 + Math.min(session.combo, 5) * 2;
+      addXp(bonus);
+      if(session.combo > session.bestCombo) session.bestCombo = session.combo;
+      sfxWin();
+      buzz(25);
+      confetti(26);
+      stageState.fb = {
+        type: 'success',
+        title: '문장 완성! +' + (xp + bonus) + ' XP',
+        sub: session.combo > 1 ? '콤보 x' + session.combo + ' 유지 중 🔥' : '이 문장은 이제 내 것이에요.',
+        btn: session.index < session.sentences.length - 1 ? '다음 문장' : '결과 보기',
+        next: 'next'
+      };
+    } else {
+      session.combo = 0;
+      sfxBad();
+      buzz([20, 40, 20]);
+      if(r.mode === 'blank'){
+        r.wrongSlots = [];
+        r.blanks.forEach(function(bi, n){
+          var chipId = r.slots[n];
+          var chip = null;
+          for(var k = 0; k < r.chips.length; k++){ if(r.chips[k].id === chipId) chip = r.chips[k]; }
+          if(!chip || norm(chip.w) !== norm(tokens[bi])) r.wrongSlots.push(n);
+        });
+      }
+      stageState.fb = {
+        type: 'error',
+        title: '거의 다 왔어요',
+        sub: r.mode === 'blank'
+          ? '빨간 빈칸을 다시 채워보세요.'
+          : (r.tries >= 2 ? '정답 보기를 눌러 문장을 확인할 수 있어요.' : '첫 글자 힌트를 활용해보세요.'),
+        btn: '다시 시도',
+        next: 'retry'
+      };
+    }
+    renderGame();
+    if(!ok){
+      shake($('.blank-sent'));
+      shake($('.type-box'));
+    }
+  }
+  function fbNext(){
+    if(!stageState || !stageState.fb) return;
+    var next = stageState.fb.next;
+    if(next === 'to3'){
+      session.stage = 3;
+      stageState.fb = null;
+      renderGame();
+      scrollStageTop();
+    } else if(next === 'retry'){
+      stageState.fb = null;
+      renderGame();
+    } else if(next === 'next'){
+      stageState.fb = null;
+      if(session.index < session.sentences.length - 1){
+        enterSentence(session.index + 1);
+      } else {
+        endSession();
+      }
+    }
+  }
+
+  function endSession(){
+    if(!session) return;
+    var s = session;
+    var acc = s.checks ? Math.round(s.perfectChecks / s.checks * 100) : 0;
+    var allDone = s.mastered >= s.sentences.length;
+
+    $('#sum-trophy').textContent = allDone ? '🏆' : (s.mastered ? '🎉' : '💪');
+    $('#sum-title').textContent = allDone ? '오늘의 10분 완료!' : (s.mastered ? '여기까지 학습했어요' : '잠깐 쉬어갔어요');
+    $('#sum-sub').textContent = s.mastered
+      ? ('문장 ' + s.mastered + '개를 내 것으로 만들었어요')
+      : '다음에 이어서 해볼까요? XP는 그대로 저장됐어요.';
+    $('#sum-xp').textContent = '+' + s.xpEarned;
+    $('#sum-acc').textContent = s.checks ? acc + '%' : '—';
+    $('#sum-combo').textContent = 'x' + Math.max(1, s.bestCombo);
+
+    var pct = Math.min(100, Math.round((store.todayMastered || 0) / 5 * 100));
+    $('#sum-goal-bar').style.width = pct + '%';
+    $('#sum-goal-text').textContent = '오늘 ' + (store.todayMastered || 0) + '/5문장' + (pct >= 100 ? ' · 달성!' : '');
+    $('#sum-streak').textContent = '🔥 ' + effectiveStreak() + '일 연속 학습';
+
+    showScreen('summary');
+    sfxWin();
+    confetti(40);
+  }
+
+  /* =========================================================
+     음성 인식 (지원하는 브라우저에서만)
+  ========================================================= */
+  function speechRecognitionCtor(){
+    return window.SpeechRecognition || window.webkitSpeechRecognition || null;
+  }
+  function startMic(){
+    var SR = speechRecognitionCtor();
+    if(!SR){ toast('이 브라우저에서는 음성 인식을 지원하지 않아요.'); return; }
+    if(!session) return;
+    try {
+      var rec = new SR();
+      rec.lang = 'en-US';
+      rec.interimResults = false;
+      rec.maxAlternatives = 1;
+      rec.onresult = function(ev){
+        var text = ev.results[0][0].transcript || '';
+        stageState.recall.typed = text;
+        renderGame();
+        toast('잘 들었어요! 확인을 눌러 채점해보세요.');
+      };
+      rec.onerror = function(){ toast('음성을 듣지 못했어요. 다시 시도해주세요.'); };
+      rec.start();
+      toast('듣고 있어요… 영어로 문장을 말해보세요.');
+    } catch(e){
+      toast('음성 인식을 시작할 수 없어요.');
+    }
+  }
+
+  /* =========================================================
+     커스텀 대본 모달
+  ========================================================= */
+  function openModal(){
+    $('#modal').classList.add('open');
+    $('#in-title').value = '';
+    $('#in-en').value = '';
+    $('#in-ko').value = '';
+    updatePreview();
+    setTimeout(function(){ $('#in-en').focus(); }, 120);
+  }
+  function closeModal(){ $('#modal').classList.remove('open'); }
+  function updatePreview(){
+    var n = splitSentences($('#in-en').value).length;
+    var el = $('#sheet-preview');
+    if(!el) return;
+    if(!n){ el.textContent = '영어 대본을 붙여넣어 주세요'; return; }
+    var koN = String($('#in-ko').value || '').trim() ? splitSentences($('#in-ko').value).length : 0;
+    el.textContent = '문장 ' + n + '개로 나뉘어요' + (koN ? (' · 번역 ' + koN + '문장') : ' · 번역은 선택이에요');
+  }
+  function saveDeck(){
+    var en = $('#in-en').value;
+    var ko = $('#in-ko').value;
+    var list = splitSentences(en);
+    if(list.length < 1){ toast('영어 대본을 먼저 붙여넣어 주세요.'); return; }
+    var koList = pairTranslations(list, ko);
+    var id = 'custom_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+    var title = String($('#in-title').value || '').trim() || ('내 대본 ' + (store.customDecks.length + 1));
+    var deck = {
+      id: id, ko: title, en: 'My script', speaker: '내 대본', emoji: '📝', tone: 'mint', custom: true,
+      sentences: list.map(function(s, i){ return { en: s, ko: koList[i] || '' }; })
+    };
+    store.customDecks.push(deck);
+    save();
+    closeModal();
+    renderHome();
+    toast('내 대본을 저장했어요. 바로 시작할게요!');
+    startSession(id);
+  }
+  function deleteDeck(id){
+    var deck = null;
+    for(var i = 0; i < store.customDecks.length; i++){ if(store.customDecks[i].id === id) deck = store.customDecks[i]; }
+    if(!deck) return;
+    if(!confirm('"' + deck.ko + '" 대본을 삭제할까요? 되돌릴 수 없어요.')) return;
+    store.customDecks = store.customDecks.filter(function(d){ return d.id !== id; });
+    save();
+    renderHome();
+    toast('대본을 삭제했어요.');
+  }
+
+  /* =========================================================
+     이벤트
+  ========================================================= */
+  document.addEventListener('click', function(e){
+    var target = e.target && e.target.nodeType === 3 ? e.target.parentElement : e.target;
+    var el = target && target.closest ? target.closest('[data-act]') : null;
+    if(!el) return;
+    var act = el.getAttribute('data-act');
+    var st = stageState;
+    var sen = session ? session.sentences[session.index] : null;
+
+    switch(act){
+      case 'start-deck':
+        startSession(el.getAttribute('data-deck'));
+        break;
+      case 'quick-start':
+        startSession((store.lastDeckId && getDeck(store.lastDeckId)) ? store.lastDeckId : DECKS[0].id);
+        break;
+      case 'open-add':
+        openModal();
+        break;
+      case 'close-add':
+        closeModal();
+        break;
+      case 'save-deck':
+        saveDeck();
+        break;
+      case 'delete-deck':
+        deleteDeck(el.getAttribute('data-deck'));
+        break;
+      case 'toggle-sound':
+        store.sound = !store.sound;
+        save();
+        el.textContent = store.sound ? '🔊' : '🔇';
+        toast(store.sound ? '효과음을 켰어요.' : '효과음을 껐어요.');
+        break;
+      case 'reset-progress':
+        if(!confirm('학습 기록(XP·연속 학습·오늘 목표)을 초기화할까요? 내 대본은 그대로 남아요.')) break;
+        var keepDecks = store.customDecks;
+        var keepSound = store.sound;
+        store = loadFreshDefaults();
+        store.customDecks = keepDecks;
+        store.sound = keepSound;
+        save();
+        renderHome();
+        toast('학습 기록을 초기화했어요.');
+        break;
+      case 'quit':
+        if(!session){ showScreen('home'); break; }
+        if(confirm('학습을 그만할까요? 지금까지 얻은 XP는 저장돼요.')) endSession();
+        break;
+      case 'home':
+        showScreen('home');
+        break;
+      case 'restart':
+        if(session) startSession(session.deck.id);
+        else showScreen('home');
+        break;
+      case 'next-stage':
+        nextStage();
+        break;
+      case 'play-audio':
+        if(sen) speak(sen.en);
+        break;
+      case 'speed':
+        if(!st) break;
+        st.speed = parseFloat(el.getAttribute('data-speed')) || 1;
+        store.speed = st.speed;
+        save();
+        renderGame();
+        if(sen) speak(sen.en);
+        break;
+      case 'toggle-ko':
+        if(!st) break;
+        st.koShown = !st.koShown;
+        renderGame();
+        break;
+      case 'place':
+        if(!st || !session || session.stage !== 2) break;
+        var pid = parseInt(el.getAttribute('data-id'), 10);
+        var already = st.scramble.placed.some(function(p){ return p.id === pid; });
+        if(already) break;
+        st.scramble.placed.push({ id: pid, w: senTokens()[pid] });
+        renderGame();
+        break;
+      case 'unplace':
+        if(!st || !session || session.stage !== 2) break;
+        var uid = parseInt(el.getAttribute('data-id'), 10);
+        st.scramble.placed = st.scramble.placed.filter(function(p){ return p.id !== uid; });
+        renderGame();
+        break;
+      case 'hint-scramble':
+        hintScramble();
+        break;
+      case 'check-scramble':
+        checkScramble();
+        break;
+      case 'fb-next':
+        fbNext();
+        break;
+      case 'mode':
+        if(!st) break;
+        st.recall.mode = el.getAttribute('data-mode');
+        st.recall.wrongSlots = [];
+        renderGame();
+        break;
+      case 'chip':
+        if(!st) break;
+        var chipId = parseInt(el.getAttribute('data-chip'), 10);
+        if(st.recall.slots.indexOf(chipId) >= 0) break;
+        var emptyAt = st.recall.slots.indexOf(null);
+        if(emptyAt < 0){ toast('빈칸이 모두 찼어요. 확인을 눌러보세요.'); break; }
+        st.recall.slots[emptyAt] = chipId;
+        st.recall.wrongSlots = [];
+        renderGame();
+        break;
+      case 'blank-clear':
+        if(!st) break;
+        var slot = parseInt(el.getAttribute('data-slot'), 10);
+        st.recall.slots[slot] = null;
+        st.recall.wrongSlots = st.recall.wrongSlots.filter(function(n){ return n !== slot; });
+        renderGame();
+        break;
+      case 'check-recall':
+        checkRecall();
+        break;
+      case 'hint-recall':
+        if(!st) break;
+        st.recall.hint = true;
+        renderGame();
+        break;
+      case 'reveal':
+        if(!st || !sen) break;
+        st.recall.revealed = true;
+        st.recall.typed = sen.en;
+        renderGame();
+        toast('정답을 확인했어요. 그대로 입력하고 확인을 눌러보세요.');
+        break;
+      case 'mic':
+        startMic();
+        break;
+    }
+  });
+
+  document.addEventListener('input', function(e){
+    if(e.target.id === 'recall-input' && stageState && stageState.recall){
+      stageState.recall.typed = e.target.value;
+    }
+    if(e.target.id === 'in-en' || e.target.id === 'in-ko'){
+      updatePreview();
+    }
+  });
+
+  document.addEventListener('keydown', function(e){
+    if((e.metaKey || e.ctrlKey) && e.key === 'Enter'){
+      if(session && session.stage === 3){ e.preventDefault(); checkRecall(); }
+      else if(session && session.stage === 2){ e.preventDefault(); checkScramble(); }
+    }
+    if(e.key === 'Escape'){
+      var modal = $('#modal');
+      if(modal && modal.classList.contains('open')) closeModal();
+    }
+  });
+
+  /* =========================================================
+     초기화
+  ========================================================= */
+  function loadFreshDefaults(){
+    var out = {};
+    for(var k in DEFAULTS){ if(Object.prototype.hasOwnProperty.call(DEFAULTS, k)) out[k] = DEFAULTS[k]; }
+    out.customDecks = [];
+    out.todayDate = todayStr();
+    return out;
+  }
+
+  function init(){
+    rollDay();
+    renderHome();
+    showScreen('home');
+  }
+  init();
+})();
+</script>
+</body>
+</html>
