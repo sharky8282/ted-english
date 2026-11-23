@@ -419,6 +419,37 @@
   .confetti{position:fixed;inset:0;pointer-events:none;z-index:80;overflow:hidden}
   .confetti i{position:absolute;top:-18px;width:9px;height:14px;border-radius:3px;animation:fall 1.35s ease-in forwards}
 
+  /* ---------- course progress + category tabs ---------- */
+  .course-progress{
+    background:linear-gradient(140deg,#eef8ff,#f4fcf0);
+    border:2px solid #dbeaf6;border-radius:18px;padding:13px 14px;margin:0 0 14px;
+    box-shadow:var(--shadow);
+  }
+  .cp-top{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-bottom:9px}
+  .cp-top b{font-size:14px;font-weight:900;letter-spacing:-.3px}
+  .cp-top span{font-size:12.5px;font-weight:900;color:var(--blue-d)}
+  .course-progress .bar{background:#fff}
+  .cat-tabs{
+    display:flex;gap:7px;margin:0 0 14px;overflow-x:auto;-webkit-overflow-scrolling:touch;
+    padding:1px 1px 3px;scrollbar-width:none;
+  }
+  .cat-tabs::-webkit-scrollbar{display:none}
+  .cat-tab{
+    flex:none;border:2px solid var(--line);background:#fff;border-radius:999px;
+    padding:8px 13px;font-size:12.5px;font-weight:900;color:#93a09a;cursor:pointer;
+    white-space:nowrap;letter-spacing:-.2px;transition:all .15s ease;
+  }
+  .cat-tab:active{transform:scale(.96)}
+  .cat-tab.on{background:var(--green-l);border-color:#c8ecae;color:var(--green-d)}
+  .deck-tags i.tag-done{color:#fff;background:var(--green);font-weight:900}
+  .deck-tags i.tag-prog{color:var(--blue-d);background:var(--blue-l)}
+  .deck-card.is-done{border-color:#cdecc0;background:#fbfef8}
+  .deck-card.is-done .deck-go{background:#a9dd7f;box-shadow:0 3px 0 #8cc862}
+  .cat-empty{
+    border:2px dashed #e2e9e5;border-radius:16px;padding:20px 14px;text-align:center;
+    font-size:12.5px;color:var(--muted);font-weight:700;line-height:1.6;margin-bottom:10px;
+  }
+
   @media (prefers-reduced-motion: reduce){
     *{animation-duration:.001s !important;transition-duration:.001s !important}
   }
@@ -466,12 +497,22 @@
         <button class="btn goal-cta" data-act="quick-start" id="goal-cta">오늘의 10분 시작</button>
       </div>
 
-      <div class="sec-head"><h2>TED 명강연</h2><span>8문장씩</span></div>
-      <div class="deck-list" id="deck-list"></div>
+      <div class="course-progress" id="course-progress">
+        <div class="cp-top"><b>대본 완성도</b><span id="cp-count">0 / 15 완료</span></div>
+        <div class="bar"><i id="cp-bar"></i></div>
+      </div>
 
-      <div class="sec-head"><h2>내 대본</h2><span>커스텀</span></div>
-      <div class="deck-list" id="custom-list"></div>
-      <button class="add-card" data-act="open-add">＋ 내 대본 추가하기</button>
+      <div class="cat-tabs" id="cat-tabs">
+        <button class="cat-tab on" data-act="cat" data-cat="all">전체</button>
+        <button class="cat-tab" data-act="cat" data-cat="ted">TED 명연설</button>
+        <button class="cat-tab" data-act="cat" data-cat="biz">비즈니스·게임 실무</button>
+        <button class="cat-tab" data-act="cat" data-cat="custom">내 대본</button>
+      </div>
+
+      <div class="sec-head"><h2 id="deck-sec-title">전체 대본</h2><span id="deck-sec-sub">15편</span></div>
+      <div class="deck-list" id="deck-list"></div>
+      <div class="cat-empty" id="cat-empty" hidden></div>
+      <button class="add-card" data-act="open-add" id="add-card">＋ 내 대본 추가하기</button>
 
       <footer class="home-foot">
         <p>진행 상황은 이 기기에 자동 저장돼요 · 인터넷 없이도 재생됩니다</p>
@@ -620,7 +661,7 @@
   var DECKS = [
     {
       id: 'sinek', ko: '왜부터 시작하라', en: 'How great leaders inspire action',
-      speaker: 'Simon Sinek', emoji: '💡', tone: 'amber',
+      speaker: 'Simon Sinek', emoji: '💡', tone: 'amber', cat: 'ted',
       sentences: [
         { en: 'Every single person, every single organization on the planet knows what they do.',
           ko: '지구상의 모든 사람, 모든 조직은 자신이 무엇을 하는지 알고 있습니다.' },
@@ -642,7 +683,7 @@
     },
     {
       id: 'urban', ko: '미루기의 뇌', en: 'Inside the mind of a master procrastinator',
-      speaker: 'Tim Urban', emoji: '🐒', tone: 'purple',
+      speaker: 'Tim Urban', emoji: '🐒', tone: 'purple', cat: 'ted',
       sentences: [
         { en: 'The Instant Gratification Monkey does not seem like a guy you want behind the wheel.',
           ko: '즉각적 만족 원숭이는 운전대를 맡기고 싶은 상대가 아닙니다.' },
@@ -664,7 +705,7 @@
     },
     {
       id: 'cuddy', ko: '몸짓이 나를 바꾼다', en: 'Your body language may shape who you are',
-      speaker: 'Amy Cuddy', emoji: '💪', tone: 'blue',
+      speaker: 'Amy Cuddy', emoji: '💪', tone: 'blue', cat: 'ted',
       sentences: [
         { en: 'We make sweeping judgments and inferences from body language.',
           ko: '우리는 몸짓에서 광범위한 판단과 추론을 이끌어냅니다.' },
@@ -683,6 +724,316 @@
         { en: 'Tiny tweaks can lead to big changes.',
           ko: '작은 조정이 큰 변화를 이끌어냅니다.' }
       ]
+    },
+    {
+      id: 'duckworth', ko: '그릿 — 끝까지 해내는 힘', en: 'Grit: the power of passion and perseverance',
+      speaker: 'Angela Duckworth', emoji: '🌱', tone: 'mint', cat: 'ted',
+      sentences: [
+        { en: "Grit is passion and perseverance for very long-term goals.",
+          ko: '그릿은 아주 장기적인 목표를 향한 열정과 끈기입니다.' },
+        { en: "Grit is having stamina.",
+          ko: '그릿은 지구력, 곧 오래 버티는 힘입니다.' },
+        { en: "Grit is living life like it's a marathon, not a sprint.",
+          ko: '그릿은 인생을 단거리 질주가 아니라 마라톤처럼 사는 것입니다.' },
+        { en: "In all those very different contexts, one characteristic emerged as a significant predictor of success.",
+          ko: '그렇게 서로 다른 상황들에서 성공을 예측하는 한 가지 특성이 떠올랐습니다.' },
+        { en: "What I do know is that talent doesn't make you gritty.",
+          ko: '제가 확실히 아는 것은 재능이 사람을 그릿하게 만들지는 않는다는 것입니다.' },
+        { en: "Our data show very clearly that there are many talented individuals who simply do not follow through on their commitments.",
+          ko: '우리 데이터는 재능이 있으면서도 약속을 끝까지 지키지 않는 사람이 많다는 걸 분명히 보여줍니다.' },
+        { en: "In fact, in our data, grit is usually unrelated or even inversely related to measures of talent.",
+          ko: '실제로 우리 데이터에서 그릿은 재능 지표와 대개 무관하거나 오히려 반대 방향이었습니다.' },
+        { en: "So far, the best idea I've heard about building grit in kids is something called growth mindset.",
+          ko: '지금까지 아이들의 그릿을 키우는 방법 중 가장 좋은 아이디어는 성장 마인드셋입니다.' },
+        { en: "In other words, we need to be gritty about getting our kids grittier.",
+          ko: '다시 말해, 우리는 아이들을 더 그릿하게 만들기 위해 우리 자신이 그릿해져야 합니다.' }
+      ]
+    },
+    {
+      id: 'brown', ko: '취약함의 힘', en: 'The power of vulnerability',
+      speaker: 'Brené Brown', emoji: '💧', tone: 'purple', cat: 'ted',
+      sentences: [
+        { en: "Connection is why we're here; it's what gives purpose and meaning to our lives.",
+          ko: '사람과 연결되는 것이 우리가 여기 있는 이유이며, 삶에 목적과 의미를 주는 것입니다.' },
+        { en: "The people who have a strong sense of love and belonging believe they're worthy of love and belonging.",
+          ko: '사랑과 소속감이 강한 사람들은 자신이 사랑받고 소속될 만한 사람이라고 믿습니다.' },
+        { en: "What they had in common was a sense of courage.",
+          ko: '그들의 공통점은 용기였습니다.' },
+        { en: "They had the courage to be imperfect.",
+          ko: '그들은 불완전할 수 있는 용기를 가졌습니다.' },
+        { en: "They fully embraced vulnerability.",
+          ko: '그들은 자신의 취약함을 온전히 받아들였습니다.' },
+        { en: "They believed that what made them vulnerable made them beautiful.",
+          ko: '그들은 자신을 취약하게 만드는 것이 곧 자신을 아름답게 만든다고 믿었습니다.' },
+        { en: "They talked about the willingness to say “I love you” first.",
+          ko: '그들은 사랑한다는 말을 먼저 꺼낼 수 있는 용의를 이야기했습니다.' },
+        { en: "They're willing to invest in a relationship that may or may not work out.",
+          ko: '그들은 잘 될지 안 될지 모르는 관계에도 기꺼이 마음을 투자합니다.' },
+        { en: "Vulnerability is the core of shame and fear and our struggle for worthiness.",
+          ko: '취약함은 수치심과 두려움, 그리고 인정받으려는 우리의 몸부림의 핵심입니다.' },
+        { en: "But it appears that it's also the birthplace of joy, of creativity, of belonging, of love.",
+          ko: '하지만 그것은 동시에 기쁨과 창의성, 소속감과 사랑이 태어나는 곳이기도 합니다.' }
+      ]
+    },
+    {
+      id: 'treasure', ko: '듣게 만드는 말하기', en: 'How to speak so that people want to listen',
+      speaker: 'Julian Treasure', emoji: '🎤', tone: 'blue', cat: 'ted',
+      sentences: [
+        { en: "The human voice: it's the instrument we all play.",
+          ko: '인간의 목소리는 우리 모두가 연주하는 악기입니다.' },
+        { en: "It's the only one that can start a war or say “I love you.”",
+          ko: '그것은 전쟁을 일으킬 수도, 사랑한다고 말할 수도 있는 유일한 악기입니다.' },
+        { en: "I've assembled for your pleasure here seven deadly sins of speaking.",
+          ko: '여기 말하기의 일곱 가지 치명적인 습관을 모아봤습니다.' },
+        { en: "It's very hard to listen to somebody if you know that you're being judged and found wanting at the same time.",
+          ko: '판단받고 부족하다고 평가받고 있다는 걸 알면서 그 사람 말을 듣기는 아주 어렵습니다.' },
+        { en: "There are four really powerful cornerstones that we can stand on if we want our speech to be powerful.",
+          ko: '강력한 말을 하고 싶다면 우리가 딛고 설 네 가지 단단한 초석이 있습니다.' },
+        { en: "Fortunately, these things spell a word, and the word is “hail.”",
+          ko: '다행히 이것들을 조합하면 한 단어가 됩니다. 바로 hail입니다.' },
+        { en: "The H is honesty, being true in what you say, being straight and clear.",
+          ko: 'H는 정직입니다. 하는 말이 참되고 곧고 명확한 것입니다.' },
+        { en: "The A is authenticity, just being yourself.",
+          ko: 'A는 진정성, 그냥 자기 자신이 되는 것입니다.' },
+        { en: "The I is integrity, being your word, actually doing what you say, and being somebody people can trust.",
+          ko: 'I는 성실함입니다. 말한 것을 실제로 행하고, 사람들이 신뢰할 수 있는 사람이 되는 것입니다.' },
+        { en: "And the L is love: I don't mean romantic love, but I do mean wishing people well.",
+          ko: '그리고 L은 사랑입니다. 연애 감정이 아니라, 사람이 잘 되기를 바라는 마음입니다.' }
+      ]
+    },
+    {
+      id: 'achor', ko: '행복이 먼저, 성공이 다음', en: 'The happy secret to better work',
+      speaker: 'Shawn Achor', emoji: '😊', tone: 'amber', cat: 'ted',
+      sentences: [
+        { en: "It's not necessarily the reality that shapes us, but the lens through which your brain views the world that shapes your reality.",
+          ko: '우리를 만드는 것은 현실 자체가 아니라, 뇌가 세상을 바라보는 렌즈입니다.' },
+        { en: "If we can change the lens, we can change every single educational and business outcome at the same time.",
+          ko: '렌즈를 바꾸면 교육과 비즈니스의 모든 결과를 한꺼번에 바꿀 수 있습니다.' },
+        { en: "90 percent of your long-term happiness is predicted not by the external world, but by the way your brain processes the world.",
+          ko: '장기적인 행복의 90%는 외부 세계가 아니라 뇌가 세상을 처리하는 방식이 결정합니다.' },
+        { en: "75 percent of job successes are predicted by your optimism levels, your social support and your ability to see stress as a challenge instead of as a threat.",
+          ko: '직무 성공의 75%는 낙관성, 사회적 지지, 그리고 스트레스를 위협이 아닌 도전으로 보는 능력이 예측합니다.' },
+        { en: "The absence of disease is not health.",
+          ko: '질병이 없는 것이 건강은 아닙니다.' },
+        { en: "We need to reverse the formula for happiness and success.",
+          ko: '우리는 행복과 성공의 공식을 거꾸로 뒤집어야 합니다.' },
+        { en: "If you can raise somebody's level of positivity in the present, their brain experiences what we now call a happiness advantage.",
+          ko: '지금 이 순간 누군가의 긍정성을 높여 주면, 그 뇌는 이른바 행복 이점을 누리게 됩니다.' },
+        { en: "Your brain at positive is 31 percent more productive than your brain at negative, neutral or stressed.",
+          ko: '긍정 상태의 뇌는 부정적이거나 무기력하거나 스트레스를 받는 상태보다 31% 더 생산적입니다.' },
+        { en: "In just a two-minute span of time done for 21 days in a row, we can actually rewire your brain.",
+          ko: '하루 2분씩 21일 연속 하면 실제로 뇌를 다시 배선할 수 있습니다.' },
+        { en: "Write down three new things that you're grateful for, for 21 days in a row.",
+          ko: '감사한 일 세 가지를 21일 동안 매일 적어 보세요.' }
+      ]
+    },
+    {
+      id: 'pink', ko: '보상이 동기를 죽일 때', en: 'The puzzle of motivation',
+      speaker: 'Dan Pink', emoji: '🔥', tone: 'purple', cat: 'ted',
+      sentences: [
+        { en: "There is a mismatch between what science knows and what business does.",
+          ko: '과학이 아는 것과 기업이 하는 것 사이에는 불일치가 있습니다.' },
+        { en: "These contingent motivators, if you do this then you get that, work in some circumstances.",
+          ko: '이걸 하면 저걸 준다는 조건부 보상은 일부 상황에서 통합니다.' },
+        { en: "But for a lot of tasks, they actually either don't work or often they do harm.",
+          ko: '하지만 많은 과제에서는 통하지 않거나 오히려 해가 됩니다.' },
+        { en: "That mechanistic, reward-and-punishment approach doesn't work for 21st century tasks.",
+          ko: '보상과 처벌이라는 기계적인 접근은 21세기 과제에는 통하지 않습니다.' },
+        { en: "The secret to high performance isn't rewards and punishments, but that unseen intrinsic drive.",
+          ko: '높은 성과의 비결은 보상과 처벌이 아니라 보이지 않는 내적 동기입니다.' },
+        { en: "The drive to do things for their own sake, the drive to do things because they matter.",
+          ko: '그 일 자체를 위해, 그 일이 중요하기 때문에 하는 마음입니다.' },
+        { en: "That new operating system for our businesses revolves around three elements: autonomy, mastery and purpose.",
+          ko: '우리 사업을 위한 새로운 운영체제는 자율성, 숙달, 목적이라는 세 요소를 중심으로 돌아갑니다.' },
+        { en: "Autonomy: the urge to direct our own lives.",
+          ko: '자율성은 우리 삶을 스스로 이끌고자 하는 충동입니다.' },
+        { en: "Mastery: the desire to get better and better at something that matters.",
+          ko: '숙달은 중요한 일에서 점점 더 나아지고 싶은 욕구입니다.' },
+        { en: "Purpose: the yearning to do what we do in the service of something larger than ourselves.",
+          ko: '목적은 우리보다 큰 무언가를 위해 일하려는 갈망입니다.' }
+      ]
+    },
+    {
+      id: 'dweck', ko: '아직(Yet)의 힘', en: 'The power of believing that you can improve',
+      speaker: 'Carol Dweck', emoji: '🌿', tone: 'mint', cat: 'ted',
+      sentences: [
+        { en: "If they didn't pass a course, they got the grade “Not Yet.”",
+          ko: '과목을 통과하지 못하면 Not Yet, 곧 아직이라는 성적을 받았습니다.' },
+        { en: "If you get a failing grade, you think, I'm nothing, I'm nowhere.",
+          ko: '낙제 성적을 받으면 나는 아무것도 아니라고 생각하게 됩니다.' },
+        { en: "But if you get the grade “Not Yet,” you understand that you're on a learning curve.",
+          ko: '하지만 아직이라는 성적을 받으면 자신이 배움의 곡선 위에 있다는 것을 압니다.' },
+        { en: "It gives you a path into the future.",
+          ko: '그것은 미래로 이어지는 길을 열어 줍니다.' },
+        { en: "They understood that their abilities could be developed.",
+          ko: '그들은 자신의 능력이 개발될 수 있음을 이해했습니다.' },
+        { en: "They had what I call a growth mindset.",
+          ko: '그들은 제가 성장 마인드셋이라고 부르는 것을 가졌습니다.' },
+        { en: "Instead of luxuriating in the power of yet, they were gripped in the tyranny of now.",
+          ko: '아직의 힘을 누리기는커녕, 그들은 지금의 폭력에 사로잡혀 있었습니다.' },
+        { en: "Are we raising kids for now instead of yet?",
+          ko: '우리는 아이들을 아직이 아니라 지금을 위해 키우고 있지는 않나요?' },
+        { en: "Every time you push out of your comfort zone to learn something new and difficult, the neurons in your brain can form new, stronger connections.",
+          ko: '편안한 영역을 벗어나 새롭고 어려운 것을 배울 때마다, 뇌의 뉴런은 새롭고 더 강한 연결을 만들 수 있습니다.' },
+        { en: "Once we know that abilities are capable of such growth, it becomes a basic human right for children to live in places filled with yet.",
+          ko: '능력이 그렇게 성장할 수 있음을 알게 되면, 아이들이 아직으로 가득한 곳에서 자라는 것은 기본적인 권리가 됩니다.' }
+      ]
+    },
+    {
+      id: 'cain', ko: '조용한 사람들의 힘', en: 'The power of introverts',
+      speaker: 'Susan Cain', emoji: '🤫', tone: 'blue', cat: 'ted',
+      sentences: [
+        { en: "Introversion is more about how you respond to stimulation, including social stimulation.",
+          ko: '내향성은 사회적 자극을 포함해 자극에 어떻게 반응하는지에 더 가깝습니다.' },
+        { en: "Introverts feel at their most alive and most capable when they're in quieter, more low-key environments.",
+          ko: '내향적인 사람은 더 조용하고 차분한 환경에서 가장 살아 있고 유능하다고 느낍니다.' },
+        { en: "Solitude is a crucial ingredient often to creativity.",
+          ko: '고독은 종종 창의성에 결정적인 재료입니다.' },
+        { en: "We can't even be in a group of people without instinctively mirroring, mimicking their opinions.",
+          ko: '우리는 사람들 사이에 있으면 본능적으로 그들의 의견을 따라 하게 됩니다.' },
+        { en: "Groups follow the opinions of the most dominant or charismatic person in the room.",
+          ko: '집단은 방에서 가장 주도적이거나 카리스마 있는 사람의 의견을 따릅니다.' },
+        { en: "There is zero correlation between being the best talker and having the best ideas.",
+          ko: '말을 가장 잘하는 것과 가장 좋은 아이디어를 가진 것 사이에는 상관관계가 전혀 없습니다.' },
+        { en: "It's much better for everybody to go off by themselves and generate their own ideas.",
+          ko: '각자 떨어져 자기 아이디어를 만드는 편이 모두에게 훨씬 좋습니다.' },
+        { en: "Number one: stop the madness for constant group work.",
+          ko: '첫째, 끊임없는 집단 작업이라는 광기를 멈추세요.' },
+        { en: "We need much more privacy, much more freedom, much more autonomy at work.",
+          ko: '일터에는 훨씬 더 많은 사생활과 자유, 자율성이 필요합니다.' },
+        { en: "The more freedom we give introverts to be themselves, the more likely they are to come up with their own unique solutions.",
+          ko: '내향적인 사람에게 자기 자신일 자유를 더 줄수록, 그들은 더 독창적인 해답을 내놓을 가능성이 큽니다.' }
+      ]
+    },
+    {
+      id: 'biz-kickoff', ko: '파트너 킥오프 · 방향 맞추기', en: 'Partner kickoff and vision alignment',
+      speaker: '실무 스크립트', emoji: '🤝', tone: 'blue', cat: 'biz',
+      sentences: [
+        { en: "Thanks for making the time today; I know everyone's calendar is full.",
+          ko: '오늘 시간 내주셔서 감사합니다. 다들 일정이 빡빡하실 텐데요.' },
+        { en: "The goal of this call is to make sure we're all pointing in the same direction.",
+          ko: '이 통화의 목적은 우리 모두가 같은 방향을 보고 있는지 확인하는 것입니다.' },
+        { en: "Before we get into the schedule, I'd like to walk you through the vision behind this project.",
+          ko: '일정 이야기를 시작하기 전에 이 프로젝트의 비전을 먼저 설명드리고 싶습니다.' },
+        { en: "Our aim is to launch in Japan with the same quality our players already expect.",
+          ko: '우리의 목표는 플레이어들이 이미 기대하는 품질 그대로 일본에서 출시하는 것입니다.' },
+        { en: "From our side, the biggest risk is a late decision on the localization scope.",
+          ko: '저희 입장에서 가장 큰 리스크는 현지화 범위에 대한 결정이 늦어지는 것입니다.' },
+        { en: "So I'd like to agree on three decisions by the end of this week.",
+          ko: '그래서 이번 주 안에 세 가지 결정에 합의하고 싶습니다.' },
+        { en: "Could you tell me what your team needs from us to move forward?",
+          ko: '앞으로 진행하기 위해 저희에게 무엇이 필요한지 말씀해 주시겠어요?' },
+        { en: "Let's keep the back-and-forth written, so nobody has to rely on memory.",
+          ko: '서로의 의견은 글로 남겨서 기억에 의존하지 않도록 합시다.' },
+        { en: "I'll send a short summary today with owners and due dates.",
+          ko: '오늘 담당자와 마감일을 정리한 짧은 요약을 보내겠습니다.' },
+        { en: "If anything in the summary looks off, please flag it by tomorrow.",
+          ko: '요약에서 이상한 부분이 있으면 내일까지 알려주세요.' }
+      ]
+    },
+    {
+      id: 'biz-build', ko: '빌드 리뷰 · 건설적 피드백', en: 'Reviewing a build and giving feedback',
+      speaker: '실무 스크립트', emoji: '🎮', tone: 'mint', cat: 'biz',
+      sentences: [
+        { en: "Thank you for the new build; I could play through the first two hours.",
+          ko: '새 빌드 감사합니다. 처음 두 시간 분량은 플레이해 봤습니다.' },
+        { en: "Overall, the core loop feels good, and the onboarding is much clearer than last time.",
+          ko: '전반적으로 핵심 플레이는 좋고, 온보딩은 지난번보다 훨씬 명확해졌습니다.' },
+        { en: "I want to start with what's working, because that's what we need to protect.",
+          ko: '잘 되고 있는 것부터 이야기하고 싶습니다. 그게 우리가 지켜야 할 부분이니까요.' },
+        { en: "There are two areas that worry me: the frame rate in the hub, and the difficulty curve in stage three.",
+          ko: '두 가지가 걱정됩니다. 허브의 프레임 레이트와 3스테이지의 난이도 곡선입니다.' },
+        { en: "On the bright side, the art direction is landing exactly as we imagined.",
+          ko: '좋은 점은 아트 디렉션이 우리가 상상한 그대로 나오고 있다는 것입니다.' },
+        { en: "Could we look at the frame rate together before we add any more characters?",
+          ko: '캐릭터를 더 추가하기 전에 프레임 레이트를 함께 점검할 수 있을까요?' },
+        { en: "I'd rather fix the curve than add more content on top of it.",
+          ko: '그 위에 콘텐츠를 더 얹기보다 난이도 곡선을 먼저 고치는 편이 좋겠습니다.' },
+        { en: "None of this is a blocker, and none of it changes my confidence in the team.",
+          ko: '어느 것도 진행을 막는 문제가 아니고, 팀에 대한 제 신뢰도 바뀌지 않습니다.' },
+        { en: "Let's agree on what we fix now and what we carry into the next milestone.",
+          ko: '지금 고칠 것과 다음 마일스톤으로 넘길 것을 정리합시다.' },
+        { en: "I'll put the notes in writing so we're all working from the same list.",
+          ko: '노트를 문서로 남겨서 모두 같은 목록을 보고 일하도록 하겠습니다.' }
+      ]
+    },
+    {
+      id: 'biz-delay', ko: '일정 지연을 외교적으로 말하기', en: 'Handling a milestone delay diplomatically',
+      speaker: '실무 스크립트', emoji: '⏳', tone: 'amber', cat: 'biz',
+      sentences: [
+        { en: "I'd like to talk about the milestone openly, because I think we both saw it coming.",
+          ko: '마일스톤 이야기를 솔직하게 하고 싶습니다. 우리 둘 다 예상했던 일이라고 생각합니다.' },
+        { en: "The build we promised for Friday won't be ready, and I want to be straight about that.",
+          ko: '금요일에 약속한 빌드는 준비되지 않을 것입니다. 그 부분은 솔직하게 말씀드리고 싶습니다.' },
+        { en: "The delay comes from two places: a late asset delivery and a bug in the save system.",
+          ko: '지연 원인은 두 가지입니다. 에셋 전달이 늦었고, 세이브 시스템에 버그가 있습니다.' },
+        { en: "I'm not looking for someone to blame; I'm looking for a plan we can trust.",
+          ko: '책임자를 찾으려는 것이 아니라, 믿을 수 있는 계획을 찾으려는 것입니다.' },
+        { en: "What I can commit to is a playable build by Wednesday, with the save fix included.",
+          ko: '제가 약속할 수 있는 것은 세이브 수정이 포함된 플레이 가능한 빌드를 수요일까지 드리는 것입니다.' },
+        { en: "What I can't commit to yet is the full content pass.",
+          ko: '아직 약속할 수 없는 것은 전체 콘텐츠 패스입니다.' },
+        { en: "Would that still work for your review cycle, or does it put the launch at risk?",
+          ko: '그게 검토 일정에 맞을까요, 아니면 출시에 위험이 될까요?' },
+        { en: "If it doesn't work, I'd rather tell you now than two weeks from now.",
+          ko: '맞지 않는다면, 2주 뒤보다는 지금 말씀드리는 편이 낫습니다.' },
+        { en: "Let's adjust the plan once, properly, instead of patching it every week.",
+          ko: '매주 임시로 고치기보다, 계획을 한 번 제대로 조정합시다.' },
+        { en: "I'll send the revised schedule today, and I'll flag anything that's still uncertain.",
+          ko: '오늘 수정된 일정을 보내고, 아직 불확실한 부분은 표시해 두겠습니다.' }
+      ]
+    },
+    {
+      id: 'biz-japan', ko: '일본 출시 피칭', en: 'Pitching a Japan market launch',
+      speaker: '실무 스크립트', emoji: '🗾', tone: 'purple', cat: 'biz',
+      sentences: [
+        { en: "Japan is not just another market for us; it's a market we have to enter properly.",
+          ko: '일본은 우리에게 또 하나의 시장이 아니라, 제대로 진입해야 하는 시장입니다.' },
+        { en: "Players there expect a localized experience, not a translated one.",
+          ko: '그곳 플레이어들은 번역된 경험이 아니라 현지화된 경험을 기대합니다.' },
+        { en: "That means text, voice, customer support, and the store page all in Japanese.",
+          ko: '텍스트, 음성, 고객 지원, 스토어 페이지까지 모두 일본어여야 한다는 뜻입니다.' },
+        { en: "It also means respecting local launch windows and local pricing expectations.",
+          ko: '현지 출시 시기와 가격 기대치를 존중해야 한다는 뜻이기도 합니다.' },
+        { en: "Our proposal is a four-month soft launch, followed by a full launch in spring.",
+          ko: '저희 제안은 4개월의 소프트 런칭 후 봄에 정식 출시하는 것입니다.' },
+        { en: "During the soft launch, we would test retention and the first-time experience.",
+          ko: '소프트 런칭 기간에는 리텐션과 첫 플레이 경험을 테스트할 것입니다.' },
+        { en: "The budget we're asking for covers localization, marketing, and community support.",
+          ko: '요청드리는 예산은 현지화, 마케팅, 커뮤니티 지원을 포함합니다.' },
+        { en: "What we need from you is a decision on scope by the end of the month.",
+          ko: '여러분께 필요한 것은 이달 말까지 범위를 결정해 주시는 것입니다.' },
+        { en: "If the scope is right, I'm confident we can hit the spring window.",
+          ko: '범위만 맞으면 봄 일정을 지킬 자신이 있습니다.' },
+        { en: "I'm happy to walk through the numbers in detail.",
+          ko: '숫자는 자세히 설명드릴 수 있습니다.' }
+      ]
+    },
+    {
+      id: 'biz-sync', ko: '원격 크로스펑셔널 싱크', en: 'Cross-functional remote sync',
+      speaker: '실무 스크립트', emoji: '🌐', tone: 'blue', cat: 'biz',
+      sentences: [
+        { en: "Let's keep this to twenty minutes so everyone can get back to work.",
+          ko: '20분으로 끝내서 다들 업무로 돌아갈 수 있게 합시다.' },
+        { en: "I'll go around the room quickly: one update, one blocker each.",
+          ko: '빠르게 돌아가며 한 사람당 업데이트 하나, 블로커 하나씩 말씀해 주세요.' },
+        { en: "Design is on track, but we're still waiting on the final UI copy.",
+          ko: '디자인은 순조롭지만 최종 UI 문구를 기다리고 있습니다.' },
+        { en: "Engineering needs the copy by Thursday to keep the sprint intact.",
+          ko: '엔지니어링은 스프린트를 유지하려면 목요일까지 문구가 필요합니다.' },
+        { en: "Marketing can start the teaser once the store page is approved.",
+          ko: '스토어 페이지가 승인되면 마케팅이 티저를 시작할 수 있습니다.' },
+        { en: "The time difference is the real blocker, not the workload.",
+          ko: '실제 걸림돌은 업무량이 아니라 시차입니다.' },
+        { en: "So let's move decisions into writing, and keep calls for discussion only.",
+          ko: '그래서 결정은 글로 남기고, 통화는 논의에만 쓰기로 합시다.' },
+        { en: "If something needs a decision today, mark it urgent in the channel.",
+          ko: '오늘 결정이 필요한 것이 있으면 채널에 긴급으로 표시해 주세요.' },
+        { en: "I'll post the summary right after this call, with owners and dates.",
+          ko: '이 통화 직후 담당자와 날짜를 포함한 요약을 올리겠습니다.' },
+        { en: "Thanks, everyone; this was a good, short sync.",
+          ko: '감사합니다. 짧고 좋은 싱크였습니다.' }
+      ]
     }
   ];
 
@@ -696,7 +1047,7 @@
   var DEFAULTS = {
     xp: 0, streak: 0, streakDate: '', todayDate: '', todayMastered: 0,
     lastDeckId: '', customDecks: [], sound: true, speed: 1,
-    bestCombo: 0, totalSentences: 0, daysStudied: 0
+    bestCombo: 0, totalSentences: 0, daysStudied: 0, done: {}, filter: 'all'
   };
   function loadStore(){
     var raw = null;
@@ -706,6 +1057,8 @@
     var out = {};
     for(var k in DEFAULTS){ if(Object.prototype.hasOwnProperty.call(DEFAULTS, k)) out[k] = DEFAULTS[k]; }
     for(var k2 in data){ if(Object.prototype.hasOwnProperty.call(data, k2)) out[k2] = data[k2]; }
+    if(!out.done || typeof out.done !== 'object' || Array.isArray(out.done)) out.done = {};
+    else out.done = JSON.parse(JSON.stringify(out.done));
     return out;
   }
   var store = loadStore();
@@ -714,6 +1067,8 @@
   }
   function rollDay(){
     if(!Array.isArray(store.customDecks)) store.customDecks = [];
+    if(!store.done || typeof store.done !== 'object' || Array.isArray(store.done)) store.done = {};
+    if(['all', 'ted', 'biz', 'custom'].indexOf(store.filter) < 0) store.filter = 'all';
     if(!store.todayDate){ store.todayDate = todayStr(); store.todayMastered = 0; }
     if(store.todayDate !== todayStr()){ store.todayDate = todayStr(); store.todayMastered = 0; }
     if(typeof store.xp !== 'number' || isNaN(store.xp)) store.xp = 0;
@@ -724,6 +1079,39 @@
 
   function allDecks(){ return DECKS.concat(store.customDecks); }
   function getDeck(id){ return allDecks().filter(function(d){ return d.id === id; })[0] || null; }
+
+  /* =========================================================
+     대본 완료 기록 (문장 단위로 저장)
+  ========================================================= */
+  function deckDoneList(deckId){
+    var arr = store.done && store.done[deckId];
+    return Array.isArray(arr) ? arr : [];
+  }
+  function deckProgress(d){
+    var list = d.sentences || [];
+    var doneList = deckDoneList(d.id);
+    var n = 0;
+    for(var i = 0; i < list.length; i++){ if(doneList.indexOf(i) >= 0) n++; }
+    return { count: n, total: list.length, complete: list.length > 0 && n >= list.length };
+  }
+  function markSentenceDone(deckId, idx){
+    if(!store.done || typeof store.done !== 'object') store.done = {};
+    var arr = deckDoneList(deckId).slice();
+    if(arr.indexOf(idx) < 0) arr.push(idx);
+    store.done[deckId] = arr;
+    save();
+  }
+  function builtinDoneCount(){
+    var n = 0;
+    DECKS.forEach(function(d){ if(deckProgress(d).complete) n++; });
+    return n;
+  }
+  function nextDeckToStudy(){
+    var last = store.lastDeckId ? getDeck(store.lastDeckId) : null;
+    if(last && (last.sentences || []).length && !deckProgress(last).complete) return last;
+    for(var i = 0; i < DECKS.length; i++){ if(!deckProgress(DECKS[i]).complete) return DECKS[i]; }
+    return DECKS[0];
+  }
 
   /* =========================================================
      음성 (Web Speech API)
@@ -940,12 +1328,25 @@
     return shuffle(all);
   }
 
+  function sessionPicks(deck){
+    var total = deck.sentences.length;
+    var doneList = deckDoneList(deck.id);
+    var rest = [];
+    for(var i = 0; i < total; i++){ if(doneList.indexOf(i) < 0) rest.push(i); }
+    if(!rest.length){
+      for(var j = 0; j < total; j++) rest.push(j);
+      shuffle(rest);
+    }
+    return rest.slice(0, 5);
+  }
+
   function startSession(deckId){
     var deck = getDeck(deckId);
     if(!deck || !deck.sentences.length){ toast('학습할 문장이 없어요.'); return; }
-    var list = deck.sentences.slice(0, 5);
+    var picks = sessionPicks(deck);
     session = {
-      deck: deck, sentences: list, index: 0, stage: 1,
+      deck: deck, picks: picks, sentences: picks.map(function(i){ return deck.sentences[i]; }),
+      index: 0, stage: 1,
       xpEarned: 0, mastered: 0, checks: 0, perfectChecks: 0,
       combo: 0, bestCombo: 0
     };
@@ -1028,19 +1429,31 @@
   ========================================================= */
   function deckCard(d){
     var accent = d.tone || 'mint';
+    var pr = deckProgress(d);
+    var tags = '<i>' + (d.speaker ? esc(d.speaker) : '내 대본') + '</i><i>' + d.sentences.length + '문장</i>';
+    if(pr.complete) tags += '<i class="tag-done">✓ 완료</i>';
+    else if(pr.count > 0) tags += '<i class="tag-prog">' + pr.count + '/' + pr.total + '</i>';
     return '' +
-      '<div class="deck-card tone-' + accent + '">' +
+      '<div class="deck-card tone-' + accent + (pr.complete ? ' is-done' : '') + '">' +
         '<button class="deck-main" data-act="start-deck" data-deck="' + esc(d.id) + '">' +
           '<span class="deck-emoji">' + (d.emoji || '📄') + '</span>' +
           '<span class="deck-info">' +
             '<b>' + esc(d.ko) + '</b>' +
             '<small>' + esc(d.en || '') + '</small>' +
-            '<span class="deck-tags"><i>' + esc(d.speaker || '내 대본') + '</i><i>' + d.sentences.length + '문장</i></span>' +
+            '<span class="deck-tags">' + tags + '</span>' +
           '</span>' +
-          '<span class="deck-go">▶</span>' +
+          '<span class="deck-go">' + (pr.complete ? '↻' : '▶') + '</span>' +
         '</button>' +
         (d.custom ? '<button class="deck-del" data-act="delete-deck" data-deck="' + esc(d.id) + '" aria-label="대본 삭제">✕</button>' : '') +
       '</div>';
+  }
+  function currentFilter(){ return store.filter || 'all'; }
+  function filteredDecks(){
+    var f = currentFilter();
+    if(f === 'ted') return DECKS.filter(function(d){ return d.cat === 'ted'; });
+    if(f === 'biz') return DECKS.filter(function(d){ return d.cat === 'biz'; });
+    if(f === 'custom') return store.customDecks;
+    return DECKS.concat(store.customDecks);
   }
   function renderHome(){
     var streak = effectiveStreak();
@@ -1060,14 +1473,45 @@
     var soundBtn = $('#sound-btn');
     if(soundBtn) soundBtn.textContent = store.sound ? '🔊' : '🔇';
 
-    $('#deck-list').innerHTML = DECKS.map(deckCard).join('');
+    // 전체 완성도
+    var doneN = builtinDoneCount();
+    var cpCount = $('#cp-count');
+    if(cpCount) cpCount.textContent = doneN + ' / ' + DECKS.length + ' 완료';
+    var cpBar = $('#cp-bar');
+    if(cpBar) cpBar.style.width = Math.round(doneN / DECKS.length * 100) + '%';
 
-    var customList = $('#custom-list');
-    if(store.customDecks.length){
-      customList.innerHTML = store.customDecks.map(deckCard).join('');
+    // 카테고리 탭
+    var f = currentFilter();
+    $$('#cat-tabs .cat-tab').forEach(function(b){
+      b.classList.toggle('on', b.getAttribute('data-cat') === f);
+    });
+
+    var list = filteredDecks();
+    var tedN = DECKS.filter(function(d){ return d.cat === 'ted'; }).length;
+    var bizN = DECKS.filter(function(d){ return d.cat === 'biz'; }).length;
+    var title = '전체 대본';
+    var sub = DECKS.length + '편' + (store.customDecks.length ? ' + 내 대본 ' + store.customDecks.length + '편' : '');
+    if(f === 'ted'){ title = 'TED 명연설'; sub = tedN + '편 · 8~10문장'; }
+    else if(f === 'biz'){ title = '비즈니스·게임 실무'; sub = bizN + '편 · 10문장'; }
+    else if(f === 'custom'){ title = '내 대본'; sub = store.customDecks.length + '편 · 직접 추가'; }
+    $('#deck-sec-title').textContent = title;
+    $('#deck-sec-sub').textContent = sub;
+
+    var empty = $('#cat-empty');
+    if(list.length){
+      $('#deck-list').innerHTML = list.map(deckCard).join('');
+      if(empty) empty.hidden = true;
     } else {
-      customList.innerHTML = '<div class="empty-custom">붙여넣은 대본이 여기에 쌓여요. 나만의 문장으로도 같은 게임을 즐겨보세요.</div>';
+      $('#deck-list').innerHTML = '';
+      if(empty){
+        empty.hidden = false;
+        empty.innerHTML = f === 'custom'
+          ? '아직 내 대본이 없어요.<br>TED 대본이나 비즈니스 표현을 붙여넣으면 같은 게임으로 학습해요.'
+          : '이 카테고리에 아직 대본이 없어요.';
+      }
     }
+    var addBtn = $('#add-card');
+    if(addBtn) addBtn.hidden = !(f === 'all' || f === 'custom');
   }
   function updateStats(){
     var el = $('#stat-xp');
@@ -1359,16 +1803,24 @@
       session.mastered++;
       countMastered();
       touchStreak();
+      var wasComplete = deckProgress(session.deck).complete;
+      markSentenceDone(session.deck.id, session.picks[session.index]);
+      var deckNow = deckProgress(session.deck);
+      var justCompleted = deckNow.complete && !wasComplete;
       var bonus = 5 + Math.min(session.combo, 5) * 2;
       addXp(bonus);
       if(session.combo > session.bestCombo) session.bestCombo = session.combo;
       sfxWin();
       buzz(25);
       confetti(26);
+      if(justCompleted){
+        confetti(40);
+        toast('🎉 「' + session.deck.ko + '」 대본 완성!');
+      }
       stageState.fb = {
         type: 'success',
         title: '문장 완성! +' + (xp + bonus) + ' XP',
-        sub: session.combo > 1 ? '콤보 x' + session.combo + ' 유지 중 🔥' : '이 문장은 이제 내 것이에요.',
+        sub: justCompleted ? '이 대본을 끝까지 완성했어요! 🎉' : (deckNow.complete ? '이미 완료한 대본이에요. 복습으로 다졌어요.' : (session.combo > 1 ? '콤보 x' + session.combo + ' 유지 중 🔥' : '이 문장은 이제 내 것이에요.')),
         btn: session.index < session.sentences.length - 1 ? '다음 문장' : '결과 보기',
         next: 'next'
       };
@@ -1430,8 +1882,9 @@
 
     $('#sum-trophy').textContent = allDone ? '🏆' : (s.mastered ? '🎉' : '💪');
     $('#sum-title').textContent = allDone ? '오늘의 10분 완료!' : (s.mastered ? '여기까지 학습했어요' : '잠깐 쉬어갔어요');
+    var deckPr = deckProgress(s.deck);
     $('#sum-sub').textContent = s.mastered
-      ? ('문장 ' + s.mastered + '개를 내 것으로 만들었어요')
+      ? ('문장 ' + s.mastered + '개를 내 것으로 만들었어요' + (deckPr.complete ? ' · 이 대본 완성! 🎉' : ' · 이 대본 ' + deckPr.count + '/' + deckPr.total + '문장'))
       : '다음에 이어서 해볼까요? XP는 그대로 저장됐어요.';
     $('#sum-xp').textContent = '+' + s.xpEarned;
     $('#sum-acc').textContent = s.checks ? acc + '%' : '—';
@@ -1521,6 +1974,7 @@
     if(!deck) return;
     if(!confirm('"' + deck.ko + '" 대본을 삭제할까요? 되돌릴 수 없어요.')) return;
     store.customDecks = store.customDecks.filter(function(d){ return d.id !== id; });
+    if(store.done && store.done[id]){ delete store.done[id]; }
     save();
     renderHome();
     toast('대본을 삭제했어요.');
@@ -1542,7 +1996,14 @@
         startSession(el.getAttribute('data-deck'));
         break;
       case 'quick-start':
-        startSession((store.lastDeckId && getDeck(store.lastDeckId)) ? store.lastDeckId : DECKS[0].id);
+        startSession(nextDeckToStudy().id);
+        break;
+      case 'cat':
+        store.filter = el.getAttribute('data-cat') || 'all';
+        save();
+        renderHome();
+        var homeScreen = document.getElementById('screen-home');
+        if(homeScreen) homeScreen.scrollTop = 0;
         break;
       case 'open-add':
         openModal();
@@ -1563,7 +2024,7 @@
         toast(store.sound ? '효과음을 켰어요.' : '효과음을 껐어요.');
         break;
       case 'reset-progress':
-        if(!confirm('학습 기록(XP·연속 학습·오늘 목표)을 초기화할까요? 내 대본은 그대로 남아요.')) break;
+        if(!confirm('학습 기록(XP·연속 학습·대본 완료 표시)을 초기화할까요? 내 대본은 그대로 남아요.')) break;
         var keepDecks = store.customDecks;
         var keepSound = store.sound;
         store = loadFreshDefaults();
@@ -1697,6 +2158,8 @@
     var out = {};
     for(var k in DEFAULTS){ if(Object.prototype.hasOwnProperty.call(DEFAULTS, k)) out[k] = DEFAULTS[k]; }
     out.customDecks = [];
+    out.done = {};
+    out.filter = 'all';
     out.todayDate = todayStr();
     return out;
   }
